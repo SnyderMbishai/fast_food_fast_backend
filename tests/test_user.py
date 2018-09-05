@@ -34,3 +34,10 @@ class TestUser(BaseCase):
         self.assertEqual(400, response.status_code)
         expected = {'message': 'Invalid email.'}
         self.assertEqual(expected['message'], loads(response.data)['message'])
+
+        # test signup using inavalid password
+        self.user_data_3.update({'username':'user3', 'email': 'user3@mail.com', 'password':''})
+        response = self.client.post('/api/v1/users/signup', data=self.user_data_3)
+        self.assertEqual(400, response.status_code)
+        expected = {'message': 'Invalid password. Password should be 8 or more characters long.'}
+        self.assertEqual(expected['message'], loads(response.data)['message'])
