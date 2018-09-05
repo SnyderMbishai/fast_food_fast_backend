@@ -8,7 +8,7 @@ class TestModels(BaseCase):
 
     def test_user(self):
         '''Test user model.'''
-        
+
         # Test saving a user.
         result = self.user1.save()
         expected = {
@@ -32,4 +32,10 @@ class TestModels(BaseCase):
         new_data = {'username': 'New Username'}
         result = self.user1.update(new_data)
         self.assertEqual(result['username'], new_data['username'])
+
+        # Test deleting a user.
+        self.user1.delete()
+        self.assertEqual(None, User.get(id=1))
+        self.assertEqual(0, len(User.get_all()))
+        self.assertEqual(None, User.get_by_key(username='user1'))
 
