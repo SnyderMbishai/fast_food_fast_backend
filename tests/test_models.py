@@ -54,3 +54,8 @@ class TestModels(BaseCase):
         self.assertIsInstance(Meal.get_all(), dict)
         self.assertEqual(1, len(Meal.get_all()))
 
+        # Test updating a meal.
+        new_data = {'name': 'New name'}
+        result = self.meal1.update(new_data)
+        self.assertEqual(result['name'], new_data['name'])
+
