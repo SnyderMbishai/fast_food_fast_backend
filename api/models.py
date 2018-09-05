@@ -9,7 +9,10 @@ class Base:
     def save(self):
         '''Method for saving objects to the db.'''
 
-        pass
+        if self.id is None:
+            setattr(self, 'id', len(getattr(db, self.tablename)) + 1)
+        getattr(db, self.tablename).update({self.id: self})
+        return self.view()
     
     def delete(self):
         '''Method for deleting a db object.'''
