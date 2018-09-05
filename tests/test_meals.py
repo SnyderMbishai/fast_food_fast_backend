@@ -53,3 +53,19 @@ class TestMealResource(BaseCase):
         self.assertEqual(response.status_code, 403)
         expected = {'message': 'You do not have permission to perform this action'}
         self.assertEqual(loads(response.data)['message'], expected['message'])
+
+    def test_can_get_meals(self):
+        # one and all
+        pass
+    
+    def test_can_edit_meal(self):
+        pass
+    
+    def test_only_admin_can_edit_Meal(self):
+        pass
+    
+    def test_can_delete_meal(self):
+        pass
+    
+    def test_only_admin_can_delete_meal(self):
+        pass
