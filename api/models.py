@@ -1,6 +1,11 @@
 """Models and their methods."""
 
+from datetime import timedelta
+from hashlib import sha256
+from os import getenv
 from time import time
+
+from jwt import encode, decode
 
 db = {}
 class Base:
@@ -68,8 +73,12 @@ class User(Base):
         self.id = None
         self.username = username
         self.email = email
-        self.password = password
+        self.password = self.make_hash(password)
         self.roles = []
+
+    def make_hash(self, password):
+        '''Generate hash of password.'''
+        return sha256(password.encode('utf-8')).hexdigest()
 
 class Meal(Base):
     '''Class for meals: model and methods.'''
