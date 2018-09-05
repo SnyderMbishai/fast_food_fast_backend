@@ -22,8 +22,11 @@ class Base:
     def update(self, new_data):
         '''Method for updating an objects' details'''
 
-        pass
-       
+        keys = new_data.keys()
+        for key in keys:
+            setattr(self, key, new_data[key])
+        return self.save()
+
     def view(self):
         '''Method for displaying an object's details.'''
 
