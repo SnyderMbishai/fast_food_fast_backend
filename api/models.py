@@ -17,7 +17,7 @@ class Base:
     def delete(self):
         '''Method for deleting a db object.'''
 
-        pass
+        del getattr(db, self.tablename)[self.id]
     
     def update(self, new_data):
         '''Method for updating an objects' details'''
