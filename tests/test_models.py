@@ -20,3 +20,7 @@ class TestModels(BaseCase):
 
     # Test getting a user by key.
     self.assertIsInstance(User.get_by_key(username='user1'), User)
+
+    # Test get all users.
+    self.assertIsInstance(User.get_all(), dict)
+    self.assertEqual(1, len(User.get_all()))
