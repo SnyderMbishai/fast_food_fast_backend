@@ -146,3 +146,8 @@ class Order(Base):
         self.user = User.get(id=user_id).view()
         self.time = time()
         self.total = self.get_total()
+
+    def get_total(self):
+        '''Method for calculating an order's total price.'''
+        
+        return sum([i['quantity'] * i['meal']['price'] for i in self.meals])
