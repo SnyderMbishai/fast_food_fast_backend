@@ -65,4 +65,6 @@ class BaseCase(TestCase):
 
     def tearDown(self):
         """Delete database and recreate it with no data."""
+
+        db.drop()
         self.app_context.pop()
