@@ -26,6 +26,12 @@ class BaseCase(TestCase):
             price=100
         )
         self.meal1.save()
+        self.meal1.save()
+        self.order1 = Order(
+            1,
+            {1: 2}
+        )
+        self.order1.save()
     
 
     def tearDown(self):
