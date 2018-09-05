@@ -17,3 +17,6 @@ class TestModels(BaseCase):
 
     # Test getting a user.
     self.assertIsInstance(User.get(id=1), User)
+
+    # Test getting a user by key.
+    self.assertIsInstance(User.get_by_key(username='user1'), User)
