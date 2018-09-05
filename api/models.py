@@ -78,6 +78,7 @@ class User(Base):
 
     def make_hash(self, password):
         '''Generate hash of password.'''
+
         return sha256(password.encode('utf-8')).hexdigest()
 
     def generate_token(self):
@@ -93,9 +94,14 @@ class User(Base):
     @staticmethod
     def decode_token(token):
         '''Decode the generated user token.'''
-        
+
         key = getenv('SECRET_KEY')
         return decode(token, key=key, algorithms=['HS256'])
+
+    def check_password(self, password):
+        '''validate password'''
+        
+        return True if self.make_hash(password) == self.password else False
 
 class Meal(Base):
     '''Class for meals: model and methods.'''
