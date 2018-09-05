@@ -30,7 +30,7 @@ class Base:
     def view(self):
         '''Method for displaying an object's details.'''
 
-        pass
+        return self.__dict__
     
     @classmethod
     def get(cls, id):
