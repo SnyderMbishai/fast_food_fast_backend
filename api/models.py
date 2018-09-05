@@ -48,7 +48,14 @@ class Base:
     def get_by_key(cls, **kwargs):
         '''Method to get an item by key from the db.'''
 
-        pass
+        kwarg = kwargs.keys()[0]
+        db_store = getattr(db, cls.tablename)
+        
+        for key in db_store:
+            obj = db_store[key]
+            if obj.view()[kwarg] == kwargs[kwarg]:
+                return obj
+        return None
 
 class User(Base):
     '''Class for users: model and methods.'''
