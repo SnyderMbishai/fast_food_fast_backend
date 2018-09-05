@@ -72,3 +72,6 @@ class TestModels(BaseCase):
         expected = sorted(['id', 'total', 'user', 'time', 'meals'])
         self.assertEqual(result, expected)
 
+        # Test getting a order.
+        self.assertIsInstance(Order.get(id=1), Order)
+
