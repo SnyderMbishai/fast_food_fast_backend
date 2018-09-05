@@ -7,7 +7,21 @@ from time import time
 
 from jwt import encode, decode
 
-db = {}
+class DB():
+    '''In memory database'''
+
+    def __init__(self):
+        '''Initialize db.'''
+        
+        self.users = {}
+        self.orders = {}
+        self.meals = {}
+    
+    def drop(self):
+        self.__init__()            
+
+db = DB()
+
 class Base:
     '''Base class to be inherited by the models' classes'''
 
