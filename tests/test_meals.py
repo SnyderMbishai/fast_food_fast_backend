@@ -28,8 +28,15 @@ class TestMealResource(BaseCase):
         expected = {'message': 'Meal with that name already exists.'}
         self.assertEqual(loads(response.data)['message'], expected['message'])
 
-        # test creating using invalid data.
+        # Test creating using invalid data.
         response = self.client.post(MEALS_URL, data=self.invalid_meal_data, headers=headers)
         self.assertEqual(response.status_code, 400)
         expected = {'message': 'Name (str) is required.'}
         self.assertEqual(loads(response.data)['message']['name'], expected['message'])
+
+        # Test using a valid meal name and try it again
+        self.invalid_meal_data.update({'name': 'Meal 1'})
+        response = self.client.post(MEALS_URL, data=self.invalid_meal_data, headers=headers)
+        self.assertEqual(response.status_code, 400)
+        expected = {'message': 'Price (int) is required.'}
+        self.assertEqual(loads(response.data)['message']['price'], expected['message'])
