@@ -3,22 +3,62 @@
 from time import time
 
 db = {}
+class Base:
+    '''Base class to be inherited by the models' classes'''
 
-class User(object):
+    def save(self):
+        '''Method for saving objects to the db.'''
+
+        pass
+    
+    def delete(self):
+        '''Method for deleting a db object.'''
+
+        pass
+    
+    def update(self, new_data):
+        '''Method for updating an objects' details'''
+
+        pass
+       
+    def view(self):
+        '''Method for displaying an object's details.'''
+
+        pass
+    
+    @classmethod
+    def get(cls, id):
+        '''Method to get a specific item from the db.'''
+
+        pass
+        
+    @classmethod
+    def get_all(cls):
+        '''Method to get all specified items from the db.'''
+
+        pass
+    
+    @classmethod
+    def get_by_key(cls, **kwargs):
+        '''Method to get an item by key from the db.'''
+
+        pass
+
+class User(Base):
     '''Class for users: model and methods.'''
 
     tablename = 'users'
 
     def __init__(self, username, password, email):
         '''Initialize the user object.'''
-        
+
         self.id = None
         self.username = username
         self.email = email
         self.password = password
         self.roles = []
 
-class Meal(object):
+class Meal(Base):
     '''Class for meals: model and methods.'''
 
     tablename = 'meals'
@@ -30,7 +70,7 @@ class Meal(object):
         self.name = name
         self.price = price
 
-class Order(object):
+class Order(Base):
     '''Class for orders: model and methods.'''
 
     tablename = 'orders'
