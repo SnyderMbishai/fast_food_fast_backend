@@ -42,7 +42,7 @@ class Base:
     def get_all(cls):
         '''Method to get all specified items from the db.'''
 
-        pass
+        return getattr(db, cls.tablename)
     
     @classmethod
     def get_by_key(cls, **kwargs):
