@@ -28,3 +28,9 @@ class TestUser(BaseCase):
         self.assertEqual(400, response.status_code)
         expected = {'message': 'Invalid username.'}
         self.assertEqual(expected['message'], loads(response.data)['message'])
+
+        # test signup using inavalid email
+        response = self.client.post('/api/v1/users/signup', data=self.user_data_3)
+        self.assertEqual(400, response.status_code)
+        expected = {'message': 'Invalid email.'}
+        self.assertEqual(expected['message'], loads(response.data)['message'])
