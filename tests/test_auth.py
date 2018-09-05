@@ -26,3 +26,11 @@ class TestAuth(BaseCase):
         self.assertEqual(401, response.status_code)
         expected = {'message': 'Username/Password Invalid.'}
         self.assertEqual(expected['message'], loads(response.data)['message'])
+
+        # test signin with nonexistent username
+        response = self.client.post(
+            '/api/v1/users/signin',
+            data={'username': 'user2', 'password':'pass#1234'})
+        self.assertEqual(401, response.status_code)
+        expected = {'message': 'Username/Password Invalid.'}
+        self.assertEqual(expected['message'], loads(response.data)['message'])
