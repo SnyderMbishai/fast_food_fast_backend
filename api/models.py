@@ -80,6 +80,16 @@ class User(Base):
         '''Generate hash of password.'''
         return sha256(password.encode('utf-8')).hexdigest()
 
+    def generate_token(self):
+        '''Method for generating user token.'''
+        
+        key = getenv('SECRET_KEY')
+        payload = {'username': self.username,
+                    'roles': self.roles,
+                    'created_at': time(),
+                    'exp': time() + timedelta(hours=7).total_seconds() }
+        return encode(payload=payload, key=str(key), algorithm='HS256')
+
 class Meal(Base):
     '''Class for meals: model and methods.'''
 
