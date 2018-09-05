@@ -112,7 +112,7 @@ class User(Base):
             'roles': self.roles,
             'id': self.id
         }
-        
+
 class Meal(Base):
     '''Class for meals: model and methods.'''
 
@@ -139,6 +139,10 @@ class Order(Base):
         '''
 
         self.id = None
-        self.meals_dict = meals_dict
-        self.user_id = user_id
+        self.meals = [
+            {'quantity': meals_dict[meal_id],
+             'meal': Meal.get(id=meal_id).view()}
+            for meal_id in meals_dict.keys()]
+        self.user = User.get(id=user_id).view()
         self.time = time()
+        self.total = self.get_total()
