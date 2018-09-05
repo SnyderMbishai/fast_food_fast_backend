@@ -1,5 +1,7 @@
 """Models and their methods."""
 
+from time import time
+
 db = {}
 
 class User(object):
@@ -12,10 +14,26 @@ class User(object):
         self.roles = []
 
 class Meal(object):
-    
+
     tablename = 'meals'
 
     def __init__(self, name, price):
         self.id = None
         self.name = name
         self.price = price
+
+class Order(object):
+
+    tablename = 'orders'
+
+    def __init__(self, user_id, meals_dict):
+        '''
+        Create an order.
+
+        Pass in meals_dict as {meal_id: quantity}
+        The user_id is the id of the user making the order.
+        '''
+        self.id = None
+        self.meals_dict = meals_dict
+        self.user_id = user_id
+        self.time = time()
