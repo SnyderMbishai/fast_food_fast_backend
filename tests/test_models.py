@@ -84,3 +84,8 @@ class TestModels(BaseCase):
         result = self.order1.update(new_data)
         self.assertEqual(result['meals'][0]['quantity'], 4)
 
+        # Test deleting an order.
+        self.order1.delete()
+        self.assertEqual(None, Order.get(id=1))
+        self.assertEqual(0, len(Order.get_all()))
+
