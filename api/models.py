@@ -149,5 +149,13 @@ class Order(Base):
 
     def get_total(self):
         '''Method for calculating an order's total price.'''
-        
+
         return sum([i['quantity'] * i['meal']['price'] for i in self.meals])
+
+    def update(self, new_data):
+        '''Method for updating details of an order.'''
+        
+        new_order = Order(
+            new_data['user_id'], meals_dict=new_data['meals_dict'])
+        setattr(new_order, 'id', self.id)
+        return new_order.save()
