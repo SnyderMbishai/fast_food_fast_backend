@@ -52,6 +52,15 @@ class BaseCase(TestCase):
             'password': 'password'
         }
 
+        self.valid_meal_data = {
+            'name': 'Meal2',
+            'price': 100
+        }
+        self.invalid_meal_data = {
+            'name': None,
+            'price': None
+        }
+
     def get_user_token(self):
         '''Method for getting user token.'''
 
