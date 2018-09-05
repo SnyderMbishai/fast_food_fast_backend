@@ -59,3 +59,8 @@ class TestModels(BaseCase):
         result = self.meal1.update(new_data)
         self.assertEqual(result['name'], new_data['name'])
 
+        # Test deleting a meal.
+        self.meal1.delete()
+        self.assertEqual(None, Meal.get(id=1))
+        self.assertEqual(0, len(Meal.get_all()))
+
