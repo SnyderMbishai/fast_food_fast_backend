@@ -21,6 +21,11 @@ class BaseCase(TestCase):
             email='user1@email.com',
             password='pass#123')
         self.user1.save()
+        self.meal1 = Meal(
+            name='Meal1',
+            price=100
+        )
+        self.meal1.save()
     
 
     def tearDown(self):
