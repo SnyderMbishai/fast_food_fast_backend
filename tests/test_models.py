@@ -24,3 +24,8 @@ class TestModels(BaseCase):
     # Test get all users.
     self.assertIsInstance(User.get_all(), dict)
     self.assertEqual(1, len(User.get_all()))
+
+    # Test updating a user.
+    new_data = {'username': 'New Username'}
+    result = self.user1.update(new_data)
+    self.assertEqual(result['username'], new_data['username'])
