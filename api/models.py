@@ -36,7 +36,7 @@ class Base:
     def get(cls, id):
         '''Method to get a specific item from the db.'''
 
-        pass
+        return getattr(db, cls.tablename).get(id)
         
     @classmethod
     def get_all(cls):
