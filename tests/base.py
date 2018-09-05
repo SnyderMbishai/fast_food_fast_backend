@@ -12,6 +12,7 @@ class BaseCase(TestCase):
 
     def setUp(self):
         """Set up test application."""
+        
         self.app = create_app('testing')
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
@@ -52,11 +53,15 @@ class BaseCase(TestCase):
         }
 
     def get_user_token(self):
+        '''Method for getting user token.'''
+
         self.user1.roles.append('user')
         self.user1.save()
         return self.user1.generate_token()
     
     def get_admin_token(self):
+        '''Method for getting admin token.'''
+
         admin = User(username='admin', password='pass1234', email='admin@mail.com')
         admin.roles.extend(['admin', 'user'])
         admin.save()
