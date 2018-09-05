@@ -79,3 +79,8 @@ class TestModels(BaseCase):
         self.assertIsInstance(Order.get_all(), dict)
         self.assertEqual(1, len(Order.get_all()))
 
+        # Test updating an order.
+        new_data = {'user_id': 1, 'meals_dict': {1: 4}}
+        result = self.order1.update(new_data)
+        self.assertEqual(result['meals'][0]['quantity'], 4)
+
