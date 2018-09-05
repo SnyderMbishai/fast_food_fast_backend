@@ -39,3 +39,13 @@ class TestModels(BaseCase):
         self.assertEqual(0, len(User.get_all()))
         self.assertEqual(None, User.get_by_key(username='user1'))
 
+    def test_meal(self):
+        '''Test meal model.'''
+
+        # Test saving a meal.
+        result = self.meal1.save()
+        expected = {'price': 100.0, 'id': 1, 'name': 'Meal1'}
+        self.assertDictEqual(result, expected)
+        
+
+
