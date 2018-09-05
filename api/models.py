@@ -82,13 +82,20 @@ class User(Base):
 
     def generate_token(self):
         '''Method for generating user token.'''
-        
+
         key = getenv('SECRET_KEY')
         payload = {'username': self.username,
                     'roles': self.roles,
                     'created_at': time(),
                     'exp': time() + timedelta(hours=7).total_seconds() }
         return encode(payload=payload, key=str(key), algorithm='HS256')
+    
+    @staticmethod
+    def decode_token(token):
+        '''Decode the generated user token.'''
+        
+        key = getenv('SECRET_KEY')
+        return decode(token, key=key, algorithms=['HS256'])
 
 class Meal(Base):
     '''Class for meals: model and methods.'''
