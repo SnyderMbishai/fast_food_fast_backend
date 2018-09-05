@@ -12,12 +12,18 @@ class TestMealResource(BaseCase):
     def test_can_create_a_meal(self):
         '''Test can create a meal can be created.'''
 
-        # Get admin token
+        # Get admin token.
         token = self.get_admin_token()
         headers = {'Authorization': 'Bearer {}'.format(token)}
 
-        # Test can create using valid data
+        # Test can create using valid data.
         response = self.client.post(MEALS_URL, data=self.valid_meal_data, headers=headers)
         self.assertEqual(response.status_code, 201)
         expected = {'message': 'Meal successfully added.'}
+        self.assertEqual(loads(response.data)['message'], expected['message'])
+
+        # Test creating a duplicate meal.
+        response = self.client.post(MEALS_URL, data=self.valid_meal_data, headers=headers)
+        self.assertEqual(response.status_code, 202)
+        expected = {'message': 'Meal with that name already exists.'}
         self.assertEqual(loads(response.data)['message'], expected['message'])
