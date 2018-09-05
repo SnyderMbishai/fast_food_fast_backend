@@ -50,3 +50,7 @@ class TestModels(BaseCase):
         # Test getting a meal.
         self.assertIsInstance(Meal.get(id=1), Meal)
 
+        # Test get all meals.
+        self.assertIsInstance(Meal.get_all(), dict)
+        self.assertEqual(1, len(Meal.get_all()))
+
