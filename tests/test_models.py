@@ -88,4 +88,3 @@ class TestModels(BaseCase):
         self.order1.delete()
         self.assertEqual(None, Order.get(id=1))
         self.assertEqual(0, len(Order.get_all()))
-
