@@ -64,3 +64,11 @@ class TestModels(BaseCase):
         self.assertEqual(None, Meal.get(id=1))
         self.assertEqual(0, len(Meal.get_all()))
 
+    def test_order(self):
+        '''Test order model.'''
+
+        # Test saving an order
+        result = sorted(list(self.order1.save().keys()))
+        expected = sorted(['id', 'total', 'user', 'time', 'meals'])
+        self.assertEqual(result, expected)
+
