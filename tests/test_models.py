@@ -14,3 +14,6 @@ class TestModels(BaseCase):
         'roles':[],
         'email': 'user1@email.com'}
     self.assertDictEqual(result, expected)
+
+    # Test getting a user.
+    self.assertIsInstance(User.get(id=1), User)
