@@ -50,6 +50,17 @@ class BaseCase(TestCase):
             'email': 'user2mail.com',
             'password': 'password'
         }
+
+    def get_user_token(self):
+        self.user1.roles.append('user')
+        self.user1.save()
+        return self.user1.generate_token()
+    
+    def get_admin_token(self):
+        admin = User(username='admin', password='pass1234', email='admin@mail.com')
+        admin.roles.extend(['admin', 'user'])
+        admin.save()
+        return admin.generate_token()
     
 
     def tearDown(self):
