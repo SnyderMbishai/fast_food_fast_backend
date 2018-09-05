@@ -34,9 +34,22 @@ class TestMealResource(BaseCase):
         expected = {'message': 'Name (str) is required.'}
         self.assertEqual(loads(response.data)['message']['name'], expected['message'])
 
-        # Test using a valid meal name and try it again
+        # Test using a valid meal name and try it again.
         self.invalid_meal_data.update({'name': 'Meal 1'})
         response = self.client.post(MEALS_URL, data=self.invalid_meal_data, headers=headers)
         self.assertEqual(response.status_code, 400)
         expected = {'message': 'Price (int) is required.'}
         self.assertEqual(loads(response.data)['message']['price'], expected['message'])
+
+    def test_only_admin_can_crate_meal(self):
+        '''Test that an admin only can perform certain tasks.'''
+
+        # Get user token.
+        token = self.get_user_token()
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        # Create a meal using as a user.
+        response = self.client.post(MEALS_URL, data=self.valid_meal_data, headers=headers)
+        self.assertEqual(response.status_code, 403)
+        expected = {'message': 'You do not have permission to perform this action'}
+        self.assertEqual(loads(response.data)['message'], expected['message'])
