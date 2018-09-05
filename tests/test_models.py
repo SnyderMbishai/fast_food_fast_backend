@@ -47,5 +47,6 @@ class TestModels(BaseCase):
         expected = {'price': 100.0, 'id': 1, 'name': 'Meal1'}
         self.assertDictEqual(result, expected)
         
-
+        # Test getting a meal.
+        self.assertIsInstance(Meal.get(id=1), Meal)
 
