@@ -75,3 +75,7 @@ class TestModels(BaseCase):
         # Test getting a order.
         self.assertIsInstance(Order.get(id=1), Order)
 
+        # Test get all orders.
+        self.assertIsInstance(Order.get_all(), dict)
+        self.assertEqual(1, len(Order.get_all()))
+
