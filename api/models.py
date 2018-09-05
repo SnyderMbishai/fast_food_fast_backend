@@ -100,9 +100,19 @@ class User(Base):
 
     def check_password(self, password):
         '''validate password'''
-        
-        return True if self.make_hash(password) == self.password else False
 
+        return True if self.make_hash(password) == self.password else False
+    
+    def view(self):
+        '''Method for displaying user details.'''
+
+        return {
+            'username': self.username,
+            'email': self.email,
+            'roles': self.roles,
+            'id': self.id
+        }
+        
 class Meal(Base):
     '''Class for meals: model and methods.'''
 
