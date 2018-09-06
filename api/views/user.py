@@ -14,8 +14,11 @@ class UserResource(Resource):
 
     def post(self):
         '''Create new user.'''
-        
+
         arguments = UserResource.parser.parse_args()
         password = arguments.get('password')
         email = arguments.get('email')
         username = arguments.get('username')
+
+        email_format = re.compile(r"([a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[a-zA-Z-]+$)")
+        username_format = re.compile(r"([a-zA-Z0-9]+$)")
