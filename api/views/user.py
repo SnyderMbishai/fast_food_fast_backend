@@ -22,3 +22,12 @@ class UserResource(Resource):
 
         email_format = re.compile(r"([a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[a-zA-Z-]+$)")
         username_format = re.compile(r"([a-zA-Z0-9]+$)")
+
+        if not re.match(username_format, username):
+            return {'message': 'Invalid username.'}, 400
+        elif not re.match(email_format, email):
+            return {'message': 'Invalid email.'}, 400
+        elif len(password)<8:
+            return {'message': 'Invalid password. Password should be 8 or more characters long.'}, 400
+        elif User.get_by_key(username=username) or User.get_by_key(email=email):
+            return {'message': 'Username/Email not available.'}, 400
