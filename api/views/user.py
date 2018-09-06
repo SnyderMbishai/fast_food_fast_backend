@@ -31,3 +31,13 @@ class UserResource(Resource):
             return {'message': 'Invalid password. Password should be 8 or more characters long.'}, 400
         elif User.get_by_key(username=username) or User.get_by_key(email=email):
             return {'message': 'Username/Email not available.'}, 400
+        else:
+            new_user = User(username=username, password=password, email=email)
+            new_user.roles.append('user')
+            new_user.save()
+            token = new_user.generate_token()
+            new_user = new_user.view()           
+            return {
+                'message': 'User registration successful',
+                'user': new_user,
+                'token': token }, 201
