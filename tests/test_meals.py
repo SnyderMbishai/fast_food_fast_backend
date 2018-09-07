@@ -65,7 +65,35 @@ class TestMealResource(BaseCase):
         pass
     
     def test_can_delete_meal(self):
-        pass
-    
-    def test_only_admin_can_delete_meal(self):
-        pass
+        '''Test deletion of meals.'''
+
+        headers = {'Authorization': 'Bearer {}'.format(self.get_admin_token())}
+        non_admin_headers = {
+            'Authorization': 'Bearer {}'.format(self.get_user_token())}
+        # Remove extra meal.
+        self.meal1.delete()  # Remove extra meal.
+
+        # Create meal.
+        self.client.post(
+            MEALS_URL, data=self.valid_meal_data, headers=headers)
+        response1 = self.client.get(MEALS_URL, headers=headers)
+
+        # Confirm meal creation.
+        self.assertTrue(loads(response1.data)['meals'])
+       
+        # Test non-admin cannot detete meal.
+        response2 = self.client.delete(MEAL_URL, headers=non_admin_headers)
+        self.assertEqual(
+            loads(response2.data)['message'],
+            'This action requires an admin token.')
+        response3 = self.client.delete(MEAL_URL, headers=headers)
+        response4 = self.client.get(MEALS_URL, headers=headers)
+        self.assertEqual(
+            loads(response3.data)['message'], 'Meal 1 successfully deleted.')
+        self.assertEqual(loads(response4.data)['message'], 'No meals found.')
+        
+        # Attempt deleting nonexistent meal.
+        response5 = self.client.delete(
+            '/api/v1/meals/10', headers=headers)
+        self.assertEqual(
+            loads(response5.data)['message'], 'Meal does not exist')
