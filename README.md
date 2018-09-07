@@ -31,14 +31,14 @@ https://f-f-f-v1.herokuapp.com/
 
 ### Running and testing app
 
-$ virtualenv venv
-$ cd venv
-$ git clone https://github.com/SnyderMbishai/fast_food_fast_backend.git
-$ source venv/bin/activate
-$ cd fast_food_fast_backend
-$ export APP_SETTINGS=development
-$ export APP_SECRET_KEY="sdfghjklsdfghj"
-$ python run.py
+    $ virtualenv venv
+    $ cd venv
+    $ git clone https://github.com/SnyderMbishai/fast_food_fast_backend.git
+    $ source venv/bin/activate
+    $ cd fast_food_fast_backend
+    $ export APP_SETTINGS=development
+    $ export APP_SECRET_KEY="sdfghjklsdfghj"
+    $ python run.py
 
 ##### Testing
 
