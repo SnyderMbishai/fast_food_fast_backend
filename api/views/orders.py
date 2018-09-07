@@ -104,7 +104,7 @@ class OrderResource(Resource):
 
     def patch(self, order_id):
         '''Mark order as completed.'''
-        
+
         order = Order.get(id=order_id)
         if not order:
             return {'message': 'Order does not exist.'}, 404
@@ -112,3 +112,33 @@ class OrderResource(Resource):
         order.save()
         return {
             'message': 'Order {} has been completed.'.format(order_id)}, 200
+
+class OrderManagement(Resource):
+    '''Manage orders.'''
+
+    def patch(self, order_id):
+        '''Accept or decline order.'''
+        
+        data = request.get_json(force=True)
+        accepted = data.get('accepted')
+        # Ensure accepted is a boolean.
+        if not isinstance(accepted, bool):
+            return {'message': 'accept should be a boolean.'}, 400
+        order = Order.get(id=order_id)
+        # if order is not found
+        if not order:
+            return {'message': 'Order does not exist.'}, 404
+        if not order.completed:
+            # if accepted = True
+            if accepted:
+                order.accepted = accepted
+                order.save()
+                return {
+                    'message': 'Order {} has been accepted.'.format(order_id)
+                }, 200
+            # decline order
+            order.accepted = accepted
+            return {
+                'message': 'Order {} has been declined.'.format(order_id)}, 200
+        # you cannot accept/decline an already completed order
+        return {'message': 'This order has already been completed.'}, 202
