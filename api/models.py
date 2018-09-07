@@ -18,6 +18,8 @@ class DB():
         self.meals = {}
     
     def drop(self):
+        '''Drop db.'''
+        
         self.__init__()            
 
 db = DB()
