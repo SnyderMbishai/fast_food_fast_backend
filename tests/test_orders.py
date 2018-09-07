@@ -9,7 +9,7 @@ ACCEPT_URL = '/api/v1/orders/accept/1'
 
 
 class TestOrderResource(BaseCase):
-    '''Test the meal resources.'''
+    '''Test order resources.'''
 
     def test_can_create_a_order(self):
         '''Test the POST functionality for an order.'''
@@ -150,7 +150,7 @@ class TestOrderResource(BaseCase):
 
     def test_admin_can_decline_accept_order(self):
         '''Test admin declining order.'''
-        
+
         admin_token = self.get_admin_token()
         headers = {"Authorization": "Bearer {}". format(admin_token)}
         # Test can accept
