@@ -15,6 +15,8 @@ class MealResource(Resource):
     parser.add_argument('name', required=True, type=str, help='Name (str) is required.')
     parser.add_argument('price', required=True, type=int, help='Price (int) is required.')
 
+    @login_required
+    @admin_required
     def post(self):
         '''Create a new meal.'''
         
@@ -30,6 +32,7 @@ class MealResource(Resource):
 
         return {'message': 'Meal successfully added.', 'meal': meal}, 201
 
+    @login_required
     def get(self, meal_id=None):
         ''' Get meal/meals.'''
         
@@ -47,6 +50,8 @@ class MealResource(Resource):
         meals = [meals[key].view() for key in meals]
         return {'meals': meals}, 200
 
+    @login_required
+    @admin_required
     def put(self, meal_id):
         ''' Edit a meal.'''
 
@@ -72,6 +77,8 @@ class MealResource(Resource):
                 'new_meal': meal}, 200
         return {'message': 'Meal does not exist'}, 404
 
+    @login_required
+    @admin_required
     def delete(self, meal_id):
         '''Delete a meal.'''
         
