@@ -144,4 +144,21 @@ class TestOrderResource(BaseCase):
         self.assertEqual(response.status_code, 200)
         result = loads(response.data)
         self.assertEqual(result['message'], 'Order updated successfully.')
+
+    def test_admin_can_mark_order_as_completed(self):
+        '''Test admin completing order.'''
+
+        admin_token = self.get_admin_token()
+        headers = {"Authorization": "Bearer {}". format(admin_token)}
         
+        # Admin can mark as completed.
+        response = self.client.patch(ORDER_URL, headers=headers)
+        self.assertEqual(response.status_code, 200)
+        expected = 'Order 1 has been completed.'
+        self.assertEqual(loads(response.data)['message'], expected)
+       
+        # Mark a non-existent order.
+        response = self.client.patch('/api/v1/orders/3', headers=headers)
+        self.assertEqual(response.status_code, 404)
+        expected = 'Order does not exist.'
+        self.assertEqual(loads(response.data)['message'], expected)
