@@ -124,4 +124,24 @@ class TestOrderResource(BaseCase):
         self.assertEqual(response.status_code, 404)
         expected = 'Order not found.'
         self.assertEqual(loads(response.data)['message'], expected)
+
+    def test_can_edit_order(self):
+        '''Test PUT functionality of order.'''
+
+        user_token = self.get_user_token()
+        user_header = {'Authorization': 'Bearer {}'.format(user_token)}
+        # Add an extra user.
+        self.user2 = User(
+            username='user2', email='user2@email.com', password='pass#123')
+        self.user2.save()
+        # Order for new user.
+        self.order2 = Order(2, {1: 4})
+        self.order2.save()
+        # New data.
+        new_data = dumps({'new_data': {'meals_dict': {1: 4}}})
+        response = self.client.put(
+            ORDER_URL, data=new_data, headers=user_header)
+        self.assertEqual(response.status_code, 200)
+        result = loads(response.data)
+        self.assertEqual(result['message'], 'Order updated successfully.')
         
