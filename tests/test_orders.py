@@ -162,3 +162,47 @@ class TestOrderResource(BaseCase):
         self.assertEqual(response.status_code, 404)
         expected = 'Order does not exist.'
         self.assertEqual(loads(response.data)['message'], expected)
+
+    def test_admin_can_decline_accept_order(self):
+        '''Test admin declining order.'''
+
+        admin_token = self.get_admin_token()
+        headers = {"Authorization": "Bearer {}". format(admin_token)}
+        
+        # Test can accept
+        response = self.client.patch(
+            ACCEPT_URL, data=dumps({'accepted': True}), headers=headers)
+        self.assertEqual(response.status_code, 200)
+        expected = 'Order 1 has been accepted.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        
+        # Test can decline.
+        response = self.client.patch(
+            ACCEPT_URL, data=dumps({'accepted': False}), headers=headers)
+        self.assertEqual(response.status_code, 200)
+        expected = 'Order 1 has been declined.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        
+        # Test cannot accept/decline non existent.
+        response = self.client.patch(
+            '/api/v1/orders/accept/3',
+            data=dumps({'accepted': True}), headers=headers)
+        self.assertEqual(response.status_code, 404)
+        expected = 'Order does not exist.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        self.order1.completed = True
+        self.order1.save()
+        
+        # Test cannot edit an already completed oredr.
+        response = self.client.patch(
+            ACCEPT_URL, data=dumps({'accepted': False}), headers=headers)
+        self.assertEqual(response.status_code, 202)
+        expected = 'This order has already been completed.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        
+        # Test accepted is boolean.
+        response = self.client.patch(
+            ACCEPT_URL, data=dumps({'accepted': 'p'}), headers=headers)
+        self.assertEqual(response.status_code, 400)
+        expected = 'accept should be a boolean.'
+        self.assertEqual(loads(response.data)['message'], expected)
