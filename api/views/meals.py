@@ -40,4 +40,9 @@ class MealResource(Resource):
                 return {'message': 'Meal found.', 'meal': meal.view()}, 200
             return {'message': 'Meal not found.'}, 404
 
-
+        # Get all meals
+        meals = Meal.get_all()
+        if not meals:
+            return {'message': 'No meals found.'}, 404
+        meals = [meals[key].view() for key in meals]
+        return {'meals': meals}, 200
