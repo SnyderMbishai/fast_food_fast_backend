@@ -1,4 +1,4 @@
-"""Create application."""
+'''Create application.'''
 from flask import Flask
 from flask_restful import Api
 
@@ -7,7 +7,8 @@ from api.views.welcome import WelcomeResource
 
 
 def create_app(configuration):
-    """Create the flask app."""
+    '''Create the flask app.'''
+    
     app = Flask(__name__)
     app.config.from_object(configurations[configuration])
     app_context = app.app_context()
@@ -26,5 +27,3 @@ def create_app(configuration):
     api.add_resource(
         OrderManagement, '/api/v1/orders/accept/<int:order_id>')
     return app
-
-app = create_app('testing')
