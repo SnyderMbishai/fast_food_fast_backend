@@ -9,6 +9,7 @@ from api.helpers.decorators import login_required, admin_required
 class OrderResource(Resource):
     '''Class for handling orders.'''
 
+    @login_required
     def get_role_and_user_id(self):
         '''Decode token and return data.'''
 
@@ -17,6 +18,7 @@ class OrderResource(Resource):
         payload = User.decode_token(access_token)
         return payload
 
+    @login_required
     def post(self):
         '''Create an order.'''
 
@@ -51,7 +53,7 @@ class OrderResource(Resource):
         return {
             'message': 'Order has been created successfully.', 'order': order
         }, 201
-
+    @login_required
     def get(self, order_id=None):
         '''Get order.'''
 
@@ -78,7 +80,7 @@ class OrderResource(Resource):
         orders = Order.get_many_by_key(user=user)
         orders = [order.view() for order in orders]
         return {'message': 'Orders found.', 'orders': orders}, 200
-
+    @login_required
     def put(self, order_id):
         '''Edit order details.'''
 
@@ -102,6 +104,8 @@ class OrderResource(Resource):
             'message': 'You do not have permission to edit this order.'
         }, 403
 
+    @login_required
+    @admin_required
     def patch(self, order_id):
         '''Mark order as completed.'''
 
@@ -116,6 +120,8 @@ class OrderResource(Resource):
 class OrderManagement(Resource):
     '''Manage orders.'''
 
+    @login_required
+    @admin_required
     def patch(self, order_id):
         '''Accept or decline order.'''
         
