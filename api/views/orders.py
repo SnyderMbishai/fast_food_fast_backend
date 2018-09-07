@@ -51,3 +51,30 @@ class OrderResource(Resource):
         return {
             'message': 'Order has been created successfully.', 'order': order
         }, 201
+
+    def get(self, order_id=None):
+        '''Get order.'''
+
+        payload = self.get_role_and_user_id()
+        roles, user_id = payload['roles'], payload['user_id']
+
+        is_admin = True if ('admin' in roles) else False
+        if order_id:
+            order = Order.get(id=order_id)
+            if order:
+                if order.user['id'] == user_id or is_admin:
+                    return {
+                        'message': 'Order found.', 'order': order.view()
+                    }, 200
+                return {
+                    'message': 'You do not have permission to see this order.'
+                }, 403
+            return {'message': 'Order not found.'}, 404
+        if is_admin:
+            orders = Order.get_all()
+            orders = [orders[order].view() for order in orders]
+            return {'message': 'Orders found.', 'orders': orders}, 200
+        user = User.get(id=user_id).view()
+        orders = Order.get_many_by_key(user=user)
+        orders = [order.view() for order in orders]
+        return {'message': 'Orders found.', 'orders': orders}, 200
