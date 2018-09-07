@@ -6,6 +6,9 @@ python:
 install:
   - pip install -r requirements.txt
 
+before_script:
+  - export APP_SECRET_KEY='anythinganythingsecret'
+
 script: 
   - python -m pytest
 
