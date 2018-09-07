@@ -79,7 +79,7 @@ class Base:
     @classmethod
     def get_many_by_key(cls, **kwargs):
         '''Get many objects by key'''
-        
+
         kwarg = list(kwargs.keys())[0]
         db_store = getattr(db, cls.tablename)
         objs = []
@@ -171,6 +171,8 @@ class Order(Base):
              'meal': Meal.get(id=meal_id).view()}
             for meal_id in meals_dict.keys()]
         self.user = User.get(id=user_id).view()
+        self.completed = False
+        self.accepted = False
         self.time = time()
         self.total = self.get_total()
 
