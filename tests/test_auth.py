@@ -13,24 +13,27 @@ class TestAuth(BaseCase):
         # test correct signin
         response = self.client.post(
             '/api/v1/users/signin',
-            data={'username': 'user1', 'password':'pass#123'})
+            data={'username': 'user1', 'password': 'pass#123'})
         self.assertEqual(200, response.status_code)
         expected = {'message': 'User login successful.'}
-        self.assertEqual(expected['message'], loads(response.data)['message'])
-        self.assertTrue(loads(response.data)['token'])
+        self.assertEqual(expected['message'], loads(
+            response.data.decode('utf-8'))['message'])
+        self.assertTrue(loads(response.data.decode('utf-8'))['token'])
 
         # test signin with wrong password
         response = self.client.post(
             '/api/v1/users/signin',
-            data={'username': 'user1', 'password':'pass#1234'})
+            data={'username': 'user1', 'password': 'pass#1234'})
         self.assertEqual(401, response.status_code)
         expected = {'message': 'Username/Password Invalid.'}
-        self.assertEqual(expected['message'], loads(response.data)['message'])
+        self.assertEqual(expected['message'], loads(
+            response.data.decode('utf-8'))['message'])
 
         # test signin with nonexistent username
         response = self.client.post(
             '/api/v1/users/signin',
-            data={'username': 'user2', 'password':'pass#1234'})
+            data={'username': 'user2', 'password': 'pass#1234'})
         self.assertEqual(401, response.status_code)
         expected = {'message': 'Username/Password Invalid.'}
-        self.assertEqual(expected['message'], loads(response.data)['message'])
+        self.assertEqual(expected['message'], loads(
+            response.data.decode('utf-8'))['message'])

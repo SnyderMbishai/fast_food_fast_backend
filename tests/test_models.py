@@ -3,6 +3,7 @@
 from api.models import Meal, Order, User
 from .base import BaseCase
 
+
 class TestModels(BaseCase):
     '''Class for testing the user model.'''
 
@@ -14,7 +15,7 @@ class TestModels(BaseCase):
         expected = {
             'username': 'user1',
             'id': 1,
-            'roles':[],
+            'roles': [],
             'email': 'user1@email.com'}
         self.assertDictEqual(result, expected)
 
@@ -46,7 +47,7 @@ class TestModels(BaseCase):
         result = self.meal1.save()
         expected = {'price': 100.0, 'id': 1, 'name': 'Meal1'}
         self.assertDictEqual(result, expected)
-        
+
         # Test getting a meal.
         self.assertIsInstance(Meal.get(id=1), Meal)
 
@@ -69,7 +70,8 @@ class TestModels(BaseCase):
 
         # Test saving an order
         result = sorted(list(self.order1.save().keys()))
-        expected = sorted(['id', 'total', 'user', 'time', 'meals'])
+        expected = sorted(['accepted', 'completed', 'id',
+                           'meals', 'time', 'total', 'user'])
         self.assertEqual(result, expected)
 
         # Test getting a order.

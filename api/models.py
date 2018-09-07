@@ -23,6 +23,7 @@ class DB():
 
         self.__init__()
 
+
 db = DB()
 
 
@@ -115,7 +116,7 @@ class User(Base):
     def generate_token(self):
         '''Create a token for a user.'''
 
-        key = getenv('SECRET_KEY')
+        key = getenv('APP_SECRET_KEY')
         payload = {
             'user_id': self.id,
             'username': self.username,
@@ -129,7 +130,7 @@ class User(Base):
     def decode_token(token):
         '''View information inside a token.'''
 
-        key = getenv('SECRET_KEY')
+        key = getenv('APP_SECRET_KEY')
         return decode(token, key=key, algorithms=['HS256'])
 
     def check_password(self, password):
