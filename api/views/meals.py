@@ -1,4 +1,4 @@
-'''User resource.'''
+'''Meals resource.'''
 
 import re
 
