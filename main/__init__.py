@@ -1,4 +1,5 @@
 '''Create application.'''
+
 from flask import Flask
 from flask_restful import Api
 
@@ -10,11 +11,13 @@ from api.views.meals import MealResource
 from api.views.orders import OrderResource
 from api.views.orders import OrderManagement
 
+
 def create_app(configuration):
     '''Create the flask app.'''
     
     app = Flask(__name__)
     app.config.from_object(configurations[configuration])
+    app.url_map.strict_slashes = False
     app_context = app.app_context()
     app_context.push()
     api = Api(app)

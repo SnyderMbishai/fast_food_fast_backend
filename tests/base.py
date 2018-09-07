@@ -1,5 +1,4 @@
-"""Base test class."""
-
+'''Base test class.'''
 from unittest import TestCase
 
 
@@ -8,11 +7,10 @@ from main import create_app
 
 
 class BaseCase(TestCase):
-    """Base class to be inherited by all other testcases."""
+    '''Base class to be inherited by all other testcases.'''
 
     def setUp(self):
-        """Set up test application."""
-        
+        '''Set up test application.'''
         self.app = create_app('testing')
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
@@ -27,13 +25,11 @@ class BaseCase(TestCase):
             price=100
         )
         self.meal1.save()
-        self.meal1.save()
         self.order1 = Order(
             1,
             {1: 2}
         )
         self.order1.save()
-
         self.user_data_1 = {
             'username': 'user',
             'email': 'user@mail.com',
@@ -62,23 +58,22 @@ class BaseCase(TestCase):
         }
 
     def get_user_token(self):
-        '''Method for getting user token.'''
+        '''Create a token for testing.'''
 
         self.user1.roles.append('user')
         self.user1.save()
         return self.user1.generate_token()
-    
-    def get_admin_token(self):
-        '''Method for getting admin token.'''
 
-        admin = User(username='admin', password='pass1234', email='admin@mail.com')
+    def get_admin_token(self):
+        '''Create an admin token for testing.'''
+
+        admin = User(
+            username='admin', password='pass1234', email='admin@mail.com')
         admin.roles.extend(['admin', 'user'])
         admin.save()
         return admin.generate_token()
-    
 
     def tearDown(self):
-        """Delete database and recreate it with no data."""
-
+        '''Delete database and recreate it with no data.'''
         db.drop()
         self.app_context.pop()
