@@ -49,7 +49,7 @@ class MealResource(Resource):
 
     def put(self, meal_id):
         ''' Edit a meal.'''
-        
+
         json_data = request.get_json()
         name = json_data.get('name', None)
         price = json_data.get('price', None)
@@ -70,4 +70,15 @@ class MealResource(Resource):
             return {
                 'message': 'Meal has been updated successfully',
                 'new_meal': meal}, 200
+        return {'message': 'Meal does not exist'}, 404
+
+    def delete(self, meal_id):
+        '''Delete a meal.'''
+        
+        meal = Meal.get(meal_id)
+        if meal:
+            meal.delete()
+            return{
+                'message': 'Meal {} successfully deleted.'.format(meal_id)
+            }, 200
         return {'message': 'Meal does not exist'}, 404
