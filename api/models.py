@@ -118,7 +118,7 @@ class User(Base):
                     'roles': self.roles,
                     'created_at': time(),
                     'exp': time() + timedelta(hours=7).total_seconds() }
-        return encode(payload=payload, key=str(key), algorithm='HS256')
+        return encode(payload=payload, key=str(key), algorithm='HS256').decode('utf-8')
     
     @staticmethod
     def decode_token(token):
