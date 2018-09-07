@@ -76,6 +76,19 @@ class Base:
                 return obj
         return None
 
+    @classmethod
+    def get_many_by_key(cls, **kwargs):
+        '''Get many objects by key'''
+        
+        kwarg = list(kwargs.keys())[0]
+        db_store = getattr(db, cls.tablename)
+        objs = []
+        for key in db_store:
+            obj = db_store[key]
+            if obj.view()[kwarg] == kwargs[kwarg]:
+                objs.append(obj)
+        return objs
+
 class User(Base):
     '''Class for users: model and methods.'''
 
