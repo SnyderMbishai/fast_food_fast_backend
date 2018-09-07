@@ -78,3 +78,26 @@ class OrderResource(Resource):
         orders = Order.get_many_by_key(user=user)
         orders = [order.view() for order in orders]
         return {'message': 'Orders found.', 'orders': orders}, 200
+
+    def put(self, order_id):
+        '''Edit order details.'''
+        
+        data = request.get_json(force=True)
+        new_data = data.get('new_data')
+        print(new_data)
+        payload = self.get_role_and_user_id()
+        user_id = payload['user_id']
+
+        order = Order.get(id=order_id)
+        if not order:
+            return {'message': 'Order does not exist.'}, 404
+        print(order.user, user_id)
+        if order.user['id'] == user_id:
+            new_data.update({'user_id': user_id})
+            new_order = order.update(new_data=new_data)
+            return {
+                'message': 'Order updated successfully.', 'new_order': new_order
+            }, 200
+        return {
+            'message': 'You do not have permission to edit this order.'
+        }, 403
