@@ -14,11 +14,17 @@ def create_app(configuration):
     app_context.push()
     api = Api(app)
     api.add_resource(
-        WelcomeResource,
-        '/',
-        '/api/v1/',
-        '/api/v1'
-    )
+        WelcomeResource, '/', '/api/v1')
+    api.add_resource(
+        UserResource, '/api/v1/users/signup',)
+    api.add_resource(
+        AuthResource, '/api/v1/users/signin')
+    api.add_resource(
+        MealResource, '/api/v1/meals', '/api/v1/meals/<int:meal_id>')
+    api.add_resource(
+        OrderResource, '/api/v1/orders/', '/api/v1/orders/<int:order_id>')
+    api.add_resource(
+        OrderManagement, '/api/v1/orders/accept/<int:order_id>')
     return app
 
 app = create_app('testing')
