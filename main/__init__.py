@@ -4,7 +4,11 @@ from flask_restful import Api
 
 from .config import configurations
 from api.views.welcome import WelcomeResource
-
+from api.views.user import UserResource
+from api.views.auth import AuthResource
+from api.views.meals import MealResource
+from api.views.orders import OrderResource
+from api.views.orders import OrderManagement
 
 def create_app(configuration):
     '''Create the flask app.'''
