@@ -29,3 +29,15 @@ class MealResource(Resource):
         meal = meal.save()
 
         return {'message': 'Meal successfully added.', 'meal': meal}, 201
+
+    def get(self, meal_id=None):
+        ''' Get meal/meals.'''
+        
+        # Get a single meal.
+        if meal_id:
+            meal = Meal.get_by_key(id=meal_id)
+            if meal:
+                return {'message': 'Meal found.', 'meal': meal.view()}, 200
+            return {'message': 'Meal not found.'}, 404
+
+
