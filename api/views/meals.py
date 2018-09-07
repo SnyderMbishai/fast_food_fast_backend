@@ -46,3 +46,28 @@ class MealResource(Resource):
             return {'message': 'No meals found.'}, 404
         meals = [meals[key].view() for key in meals]
         return {'meals': meals}, 200
+
+    def put(self, meal_id):
+        ''' Edit a meal.'''
+        
+        json_data = request.get_json()
+        name = json_data.get('name', None)
+        price = json_data.get('price', None)
+        new_data = {}
+        if name:
+            if isinstance(name, str):
+                new_data.update({'name': name})
+            else:
+                return {'message': 'Name should be a string.'}, 400
+        if price:
+            if isinstance(price, int):
+                new_data.update({'price': price})
+            else:
+                return {'message': 'Price should be an integer.'}
+        meal = Meal.get_by_key(meal_id=meal_id)
+        if meal:
+            meal = meal.update(new_data=new_data)
+            return {
+                'message': 'Meal has been updated successfully',
+                'new_meal': meal}, 200
+        return {'message': 'Meal does not exist'}, 404
