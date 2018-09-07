@@ -76,3 +76,52 @@ class TestOrderResource(BaseCase):
         self.assertEqual(response.status_code, 400)
         expected = 'Meal ID should be an integer.'
         self.assertEqual(expected, loads(response.data)['message'])
+
+    def test_can_get_order(self):
+        '''Test users can access their orders but admin can see all orders.'''
+
+        user_token = self.get_user_token()
+        admin_token = self.get_admin_token()
+        user_header = {'Authorization': 'Bearer {}'.format(user_token)}
+        admin_header = {'Authorization': 'Bearer {}'.format(admin_token)}
+        
+        # Add an extra user.
+        self.user2 = User(
+            username='user2', email='user2@email.com', password='pass#123')
+        self.user2.save()
+        self.order2 = Order(2, {1: 4})
+        self.order2.save()
+        
+        # User request get one.
+        response = self.client.get(ORDER_URL, headers=user_header)
+        self.assertEqual(response.status_code, 200)
+        expected = 'Order found.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        self.assertTrue(loads(response.data)['order'])
+        
+        # User request get all.
+        response = self.client.get(ORDERS_URL, headers=user_header)
+        self.assertEqual(response.status_code, 200)
+        expected = 'Orders found.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        self.assertEqual(len(loads(response.data)['orders']), 1)
+        
+        # Admin request.
+        response = self.client.get(ORDERS_URL, headers=admin_header)
+        self.assertEqual(response.status_code, 200)
+        expected = 'Orders found.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        self.assertEqual(len(loads(response.data)['orders']), 2)
+        
+        # User 1 cannnot see user 2's order.
+        response = self.client.get('/api/v1/orders/2', headers=user_header)
+        self.assertEqual(response.status_code, 403)
+        expected = 'You do not have permission to see this order.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        
+        # Returns 404 if order does not exist.
+        response = self.client.get('/api/v1/orders/4', headers=user_header)
+        self.assertEqual(response.status_code, 404)
+        expected = 'Order not found.'
+        self.assertEqual(loads(response.data)['message'], expected)
+        
