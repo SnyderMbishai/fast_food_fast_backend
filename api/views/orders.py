@@ -81,7 +81,7 @@ class OrderResource(Resource):
 
     def put(self, order_id):
         '''Edit order details.'''
-        
+
         data = request.get_json(force=True)
         new_data = data.get('new_data')
         print(new_data)
@@ -101,3 +101,14 @@ class OrderResource(Resource):
         return {
             'message': 'You do not have permission to edit this order.'
         }, 403
+
+    def patch(self, order_id):
+        '''Mark order as completed.'''
+        
+        order = Order.get(id=order_id)
+        if not order:
+            return {'message': 'Order does not exist.'}, 404
+        order.completed = True
+        order.save()
+        return {
+            'message': 'Order {} has been completed.'.format(order_id)}, 200
