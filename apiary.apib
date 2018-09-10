@@ -1,0 +1,93 @@
+FORMAT: 1A
+HOST: https://f-f-f-v1.herokuapp.com/
+
+# fast_food_fast
+
+fast_food_fast is an API application that lets users signup, signin,
+make orders and check their order history. The admin can create meals,
+accept/reject orders and mark an order as complete.
+
+## Signup [/api/v1/users/signup]
+
+### Register a User [POST]
+
+You may register as a user using this action. It takes a JSON
+object containing a username, email, password and password confirmation.
+
++ Request (application/json)
+
+        {
+            "username": "username",
+            "email": "email",
+            "password":"password123",
+            "confirm password":"password123"
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/users/signup
+
+    + Body
+
+            {
+                "message": "User registration successful",
+                "user": "new_user",
+                "token": token
+                
+            }
+
+## Signin [/api/v1/users/signin]
+
+### Signin a User [POST]
+
+You may signing if you are already registered using this action. 
+It takes a JSON object containing a username and password.
+
++ Request (application/json)
+
+        {
+            "username": "username",
+            "password":"password123"
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/users/signin
+
+    + Body
+
+            {
+                "message": "User login successful.", 
+                "token": token 
+            }
+
+
+### List All Questions [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "question": "Favourite programming language?",
+                "published_at": "2015-08-05T08:40:51.620Z",
+                "choices": [
+                    {
+                        "choice": "Swift",
+                        "votes": 2048
+                    }, {
+                        "choice": "Python",
+                        "votes": 1024
+                    }, {
+                        "choice": "Objective-C",
+                        "votes": 512
+                    }, {
+                        "choice": "Ruby",
+                        "votes": 256
+                    }
+                ]
+            }
+        ]
