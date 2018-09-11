@@ -65,29 +65,100 @@ It takes a JSON object containing a username and password.
                 "token": token 
             }
 
+## Meals [/api/v1/meals]
 
-### List All Questions [GET]
+### Create a Meal [POST]
+
+Admin can create a meal using this action. It takes a JSON
+object containing name and price.
+
++ Request (application/json)
+
+        {
+            "name": "Ugali beef",
+            "price": 500
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/meals
+
+    + Body
+
+            {
+                "message": "Meal successfully added.", 
+                "meal": meal
+                
+            }
+
+### List All Meals [GET]
 
 + Response 200 (application/json)
 
-        [
+        
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
+                "meals": [
+                    {   "id":1,
+                        "name":"ugali beef",
+                        "price":500
+                    },{
+                        "id":1,
+                        "name":"ugali beef",
+                        "price":500
+                    }]
+                     
             }
-        ]
+        
+
+## Single Meal [/api/v1/meals/1]
+
+### List a Meal [GET]
+
++ Response 200 (application/json)
+
+        
+            {
+                "meal": 
+                    {   "id":1,
+                        "name":"ugali beef",
+                        "price":500
+                    }
+            }
+        
+
+### Edit a Meal [PUT]
+
+Admin can edit a meal using this action. It takes a JSON
+object containing name or price or both.
+
++ Request (application/json)
+
+        {
+            "name": "Ugali chicken",
+            "price": 500
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/meals/1
+
+    + Body
+
+            {
+                "message": "Meal has been updated successfully",
+                "new_meal": meal
+                
+            }
+
+### Delete a Meal [DELETE]
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Meal successfully deleted."
+            }
