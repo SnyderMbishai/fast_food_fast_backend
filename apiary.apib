@@ -162,3 +162,191 @@ object containing name or price or both.
             {
                 "message": "Meal successfully deleted."
             }
+            
+## Orders [/api/v1/orders/]
+
+### Create an Order [POST]
+
+Admin can create an order using this action. It takes a JSON
+object containing the user ID and the meal details(dict).
+
++ Request (application/json)
+
+        {
+            "user_id": 1,
+            "meal_dict": {
+                1:2
+            }
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/orders/
+
+    + Body
+
+            {
+                "message": "Order has been created successfully.", 
+                "order": {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":2,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1000
+                    
+                }
+                
+            }
+
+### List All Orders [GET]
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Orders found.", 
+                "orders": [
+                        {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":2,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1000
+                    
+                }
+                ]
+                     
+            }
+        
+
+## Single Order [/api/v1/orders/1]
+
+### List a Specific Order [GET]
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Order found.", 
+                "order":
+                    {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":2,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1000
+                    
+                
+                    }
+            }
+        
+
+### Edit an order [PUT]
+
+Admin/user can edit an order using this action. It takes a JSON
+object containing the detail to be changed.
+
++ Request (application/json)
+
+        {
+            1:3
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/meals/1
+
+    + Body
+
+            {
+                "message": "Order updated successfully.", 
+                "new_order": {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":3,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1500
+                    }
+                
+            }
+
+### Delete an Order [DELETE]
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Order successfully deleted."
+            }
