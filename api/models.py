@@ -1,4 +1,4 @@
-"""Models and their methods."""
+'''Models and their methods.'''
 
 from datetime import timedelta
 from hashlib import sha256
@@ -7,39 +7,44 @@ from time import time
 
 from jwt import encode, decode
 
+
 class DB():
-    '''In memory database'''
+    '''In memory database.'''
 
     def __init__(self):
-        '''Initialize db.'''
-        
+        '''Create an empty database.'''
+
         self.users = {}
         self.orders = {}
         self.meals = {}
-    
+
     def drop(self):
-        self.__init__()            
+        '''Drop entire database.'''
+
+        self.__init__()
+
 
 db = DB()
 
+
 class Base:
-    '''Base class to be inherited by the models' classes'''
+    '''Base class to be inherited by other models.'''
 
     def save(self):
-        '''Method for saving objects to the db.'''
+        '''Add object to database.'''
 
         if self.id is None:
             setattr(self, 'id', len(getattr(db, self.tablename)) + 1)
         getattr(db, self.tablename).update({self.id: self})
         return self.view()
-    
+
     def delete(self):
-        '''Method for deleting a db object.'''
+        '''Delete object from database.'''
 
         del getattr(db, self.tablename)[self.id]
-    
+
     def update(self, new_data):
-        '''Method for updating an objects' details'''
+        '''Update object.'''
 
         keys = new_data.keys()
         for key in keys:
@@ -47,42 +52,55 @@ class Base:
         return self.save()
 
     def view(self):
-        '''Method for displaying an object's details.'''
+        '''View object as a dictionary.'''
 
         return self.__dict__
-    
+
     @classmethod
     def get(cls, id):
-        '''Method to get a specific item from the db.'''
+        '''Get object from it's table by id.'''
 
         return getattr(db, cls.tablename).get(id)
-        
+
     @classmethod
     def get_all(cls):
-        '''Method to get all specified items from the db.'''
+        '''Get all objects in a table.'''
 
         return getattr(db, cls.tablename)
-    
+
     @classmethod
     def get_by_key(cls, **kwargs):
-        '''Method to get an item by key from the db.'''
+        '''Get an object by a key that is not id.'''
 
-        kwarg = kwargs.keys()[0]
+        kwarg = list(kwargs.keys())[0]
         db_store = getattr(db, cls.tablename)
-        
         for key in db_store:
             obj = db_store[key]
             if obj.view()[kwarg] == kwargs[kwarg]:
                 return obj
         return None
 
+    @classmethod
+    def get_many_by_key(cls, **kwargs):
+        '''Get an object by a key that is not id.'''
+
+        kwarg = list(kwargs.keys())[0]
+        db_store = getattr(db, cls.tablename)
+        objs = []
+        for key in db_store:
+            obj = db_store[key]
+            if obj.view()[kwarg] == kwargs[kwarg]:
+                objs.append(obj)
+        return objs
+
+
 class User(Base):
-    '''Class for users: model and methods.'''
+    '''User model.'''
 
     tablename = 'users'
 
     def __init__(self, username, password, email):
-        '''Initialize the user object.'''
+        '''Initialize a user.'''
 
         self.id = None
         self.username = username
@@ -96,29 +114,32 @@ class User(Base):
         return sha256(password.encode('utf-8')).hexdigest()
 
     def generate_token(self):
-        '''Method for generating user token.'''
+        '''Create a token for a user.'''
 
-        key = getenv('SECRET_KEY')
-        payload = {'username': self.username,
-                    'roles': self.roles,
-                    'created_at': time(),
-                    'exp': time() + timedelta(hours=7).total_seconds() }
-        return encode(payload=payload, key=str(key), algorithm='HS256')
-    
+        key = getenv('APP_SECRET_KEY')
+        payload = {
+            'user_id': self.id,
+            'username': self.username,
+            'roles': self.roles,
+            'created_at': time(),
+            'exp': time() + timedelta(hours=7).total_seconds()}
+        return encode(
+            payload=payload, key=str(key), algorithm='HS256').decode('utf-8')
+
     @staticmethod
     def decode_token(token):
-        '''Decode the generated user token.'''
+        '''View information inside a token.'''
 
-        key = getenv('SECRET_KEY')
+        key = getenv('APP_SECRET_KEY')
         return decode(token, key=key, algorithms=['HS256'])
 
     def check_password(self, password):
-        '''validate password'''
+        '''Validate a user's password.'''
 
         return True if self.make_hash(password) == self.password else False
-    
+
     def view(self):
-        '''Method for displaying user details.'''
+        '''View a user's information.'''
 
         return {
             'username': self.username,
@@ -127,20 +148,22 @@ class User(Base):
             'id': self.id
         }
 
+
 class Meal(Base):
-    '''Class for meals: model and methods.'''
+    '''Meal model.'''
 
     tablename = 'meals'
 
     def __init__(self, name, price):
-        '''Initialize the meal object.'''
+        '''Initialize a meal.'''
 
         self.id = None
         self.name = name
         self.price = price
 
+
 class Order(Base):
-    '''Class for orders: model and methods.'''
+    '''Order model.'''
 
     tablename = 'orders'
 
@@ -151,24 +174,23 @@ class Order(Base):
         Pass in meals_dict as {meal_id: quantity}
         The user_id is the id of the user making the order.
         '''
-
         self.id = None
         self.meals = [
             {'quantity': meals_dict[meal_id],
-             'meal': Meal.get(id=meal_id).view()}
+             'meal': Meal.get(id=int(meal_id)).view()}
             for meal_id in meals_dict.keys()]
         self.user = User.get(id=user_id).view()
+        self.completed = False
+        self.accepted = False
         self.time = time()
         self.total = self.get_total()
 
     def get_total(self):
-        '''Method for calculating an order's total price.'''
-
+        '''Get total cost of an order.'''
         return sum([i['quantity'] * i['meal']['price'] for i in self.meals])
 
     def update(self, new_data):
-        '''Method for updating details of an order.'''
-        
+        '''Update an order.'''
         new_order = Order(
             new_data['user_id'], meals_dict=new_data['meals_dict'])
         setattr(new_order, 'id', self.id)
