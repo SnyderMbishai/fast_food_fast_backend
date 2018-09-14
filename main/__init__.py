@@ -35,7 +35,7 @@ def create_app(configuration):
         OrderManagement, '/api/v1/orders/accept/<int:order_id>')
     
     @app.route("/")
-    def index():
+    def docs():
         return render_template("api/templates/documentation.html")
     
     return app
