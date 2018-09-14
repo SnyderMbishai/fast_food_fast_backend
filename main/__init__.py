@@ -21,8 +21,8 @@ def create_app(configuration):
     app_context = app.app_context()
     app_context.push()
     api = Api(app)
-    #api.add_resource(
-        #WelcomeResource, '/', '/api/v1')
+    api.add_resource(
+        WelcomeResource, '/', '/api/v1')
     api.add_resource(
         UserResource, '/api/v1/users/signup',)
     api.add_resource(
@@ -34,8 +34,8 @@ def create_app(configuration):
     api.add_resource(
         OrderManagement, '/api/v1/orders/accept/<int:order_id>')
     
-    @app.route("/")
-    def docs():
-        return render_template("documentation.html")
+    # @app.route("/")
+    # def docs():
+    #     return render_template("documentation.html")
     
     return app
