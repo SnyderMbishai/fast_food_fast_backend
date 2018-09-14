@@ -36,6 +36,6 @@ def create_app(configuration):
     
     @app.route("/")
     def index():
-        return render_template("documentation.html")
+        return render_template("api/templates/documentation.html")
     
     return app
