@@ -21,8 +21,8 @@ def create_app(configuration):
     app_context = app.app_context()
     app_context.push()
     api = Api(app)
-    api.add_resource(
-        WelcomeResource, '/', '/api/v1')
+    # api.add_resource(
+    #     WelcomeResource, '/', '/api/v1')
     api.add_resource(
         UserResource, '/api/v1/users/signup',)
     api.add_resource(
