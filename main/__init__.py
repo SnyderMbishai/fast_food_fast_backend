@@ -4,6 +4,7 @@ from flask import Flask, render_template
 from flask_restful import Api
 
 from .config import configurations
+from api.views.welcome import WelcomeResource
 from api.views.user import UserResource
 from api.views.auth import AuthResource
 from api.views.meals import MealResource
@@ -32,5 +33,9 @@ def create_app(configuration):
         OrderResource, '/api/v1/orders/', '/api/v1/orders/<int:order_id>')
     api.add_resource(
         OrderManagement, '/api/v1/orders/accept/<int:order_id>')
-        
+    
+    @app.route("/")
+    def docs():
+        return render_template("documentation.html")
+    
     return app
