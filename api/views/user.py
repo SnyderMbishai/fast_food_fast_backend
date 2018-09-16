@@ -19,6 +19,7 @@ class UserResource(Resource):
         password = arguments.get('password')
         email = arguments.get('email')
         username = arguments.get('username')
+        admin = arguments.get('admin')
 
         email_format = re.compile(r"([a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[a-zA-Z-]+$)")
         username_format = re.compile(r"([a-zA-Z0-9]+$)")
@@ -34,6 +35,8 @@ class UserResource(Resource):
         else:
             new_user = User(username=username, password=password, email=email)
             new_user.roles.append('user')
+            if admin == True:
+                new_user.roles.append('admin')
             new_user.save()
             token = new_user.generate_token()
             new_user = new_user.view()           
