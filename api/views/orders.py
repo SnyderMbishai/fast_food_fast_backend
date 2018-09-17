@@ -106,6 +106,20 @@ class OrderResource(Resource):
 
     @login_required
     @admin_required
+    def delete(self, order_id):
+        '''Method for deleting an order.'''
+        order = Order.get(order_id)
+        if order:
+            order.delete()
+            return{
+                'message': 'Order {} successfully deleted.'.format(order_id)
+            }, 200
+        return {'message': 'Order does not exist'}, 404
+
+
+
+    @login_required
+    @admin_required
     def patch(self, order_id):
         '''Mark order as completed.'''
 
