@@ -109,13 +109,14 @@ class OrderResource(Resource):
     def delete(self, order_id):
         '''Method for deleting an order.'''
 
-        order = Order.get(order_id)
-        if order:
-            order.delete()
-            return{
-                'message': 'Successfully deleted Order {}.'.format(order_id)
-            }, 200
-        return {'message': 'Does not exist'}, 404
+        order = Order.get_by_key(id=order_id)
+        if not order:
+            return {'message': 'Order does not exist'}, 404
+        order.delete()
+        return{
+            'message': 'Successfully deleted Order {}.'.format(order_id)
+        }, 200
+        
 
 
 
