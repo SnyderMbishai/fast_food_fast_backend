@@ -113,9 +113,9 @@ class OrderResource(Resource):
         if order:
             order.delete()
             return{
-                'message': 'Order {} successfully deleted.'.format(order_id)
+                'message': 'Successfully deleted Order {}.'.format(order_id)
             }, 200
-        return {'message': 'Order does not exist'}, 404
+        return {'message': 'Does not exist'}, 404
 
 
 
