@@ -70,7 +70,7 @@ class MealResource(Resource):
                 new_data.update({'price': price})
             else:
                 return {'message': 'Price should be an integer.'}
-        meal = Meal.get_by_key(meal_id=meal_id)
+        meal = Meal.get_by_key(id=meal_id)
         if meal:
             meal = meal.update(new_data=new_data)
             return {
