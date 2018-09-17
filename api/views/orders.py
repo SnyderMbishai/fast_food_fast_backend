@@ -86,11 +86,11 @@ class OrderResource(Resource):
 
         data = request.get_json(force=True)
         new_data = data.get('new_data')
-        print(new_data)
         payload = self.get_role_and_user_id()
         user_id = payload['user_id']
 
-        order = Order.get(id=int(order_id))
+        order_id=int(order_id)
+        order = Order.get(id=order_id)
         if not order:
             return {'message': 'Order does not exist.'}, 404
         print(order.user, user_id)
