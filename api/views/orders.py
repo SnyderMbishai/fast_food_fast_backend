@@ -90,7 +90,7 @@ class OrderResource(Resource):
         payload = self.get_role_and_user_id()
         user_id = payload['user_id']
 
-        order = Order.get(id=order_id)
+        order = Order.get(id=int(order_id))
         if not order:
             return {'message': 'Order does not exist.'}, 404
         print(order.user, user_id)
@@ -108,6 +108,7 @@ class OrderResource(Resource):
     @admin_required
     def delete(self, order_id):
         '''Method for deleting an order.'''
+
         order = Order.get(order_id)
         if order:
             order.delete()
