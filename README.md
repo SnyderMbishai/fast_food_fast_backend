@@ -19,15 +19,15 @@ https://f-f-f-v1.herokuapp.com/
 
 ### Endpoints
 
-| Endpoint                             | Method   | Description                         |
-| ------------------------------------ | -------- | ----------------------------------- |
-| /api/v1/users/signup                 | POST     | signup a user                       |
-| /api/v1/users/signin                 | POST     | signin a user                       |
-| /api/v1/meals                        | POST     | create a meal                       |
-| /api/v1/meals/<int:meal_id>          | GET/PUT  | get/edit a specific meal            |
-| /api/v1/orders/                      | POST/GET | creat order,get all orders          |
-| /api/v1/orders/<int:order_id>        | PUT/GET  | edit an order, get a specific order |
-| /api/v1/orders/accept/<int:order_id> | PATCH    | complete, accept, reject order      |
+| Endpoint                             | Method         | Description                         |
+| ------------------------------------ | -------------- | ----------------------------------- |
+| /api/v1/users/signup                 | POST           | signup a user                       |
+| /api/v1/users/signin                 | POST           | signin a user                       |
+| /api/v1/meals                        | POST           | create a meal                       |
+| /api/v1/meals/<int:meal_id>          | GET/PUT        | get/edit a specific meal            |
+| /api/v1/orders/                      | POST/GET       | creat order,get all orders          |
+| /api/v1/orders/<int:order_id>        | PUT/GET/PATCH  | edit, get, complete an order        |
+| /api/v1/orders/accept/<int:order_id> | PATCH          | accept or reject order              |
 
 ### Running and testing app
 
