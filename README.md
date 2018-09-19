@@ -31,6 +31,8 @@ https://f-f-f-v1.herokuapp.com/
 
 ### Running and testing app
 
+#### Running:
+
     $ virtualenv venv
     $ cd venv
     $ git clone https://github.com/SnyderMbishai/fast_food_fast_backend.git
@@ -40,11 +42,43 @@ https://f-f-f-v1.herokuapp.com/
     $ export APP_SECRET_KEY="sdfghjklsdfghj"
     $ python run.py
 
+###### examples of data that can be passed:
+Registration:
+
+    {
+      "username": "Kazuri",
+      "email": "kazuri@gmail.com",
+      "password": "password123",
+      "confirm password": "password123"
+    }
+
+Signup:
+
+    {
+      "username": "Kazuri",
+      "password": "password123"
+    }
+Meal:
+
+    {
+      "name": "Ugali beef",
+      "price": 500
+    }
+
+Order:
+
+    {
+      "user_id": 1,
+      "meal_dict": {
+        "1": 2
+      }
+    }
+
 ##### Testing
 
-follow the steps above then :
+follow the steps [above ](#### Running:) then:
 
-$ python -m pytest
+    $ python -m pytest
 
 ### Author
 
