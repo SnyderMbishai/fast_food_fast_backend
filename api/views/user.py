@@ -11,6 +11,7 @@ class UserResource(Resource):
     parser.add_argument('username', required=True, type=str, help='Username (str) is required.')
     parser.add_argument('email', required=True, type=str, help='Email (str) is required.')
     parser.add_argument('password', required=True, type=str, help='Password (str) is required.')
+    parser.add_argument('admin', required=False)
 
     def post(self):
         '''Create new user.'''
@@ -19,6 +20,7 @@ class UserResource(Resource):
         password = arguments.get('password')
         email = arguments.get('email')
         username = arguments.get('username')
+        admin = arguments.get('admin')
 
         email_format = re.compile(r"([a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[a-zA-Z-]+$)")
         username_format = re.compile(r"([a-zA-Z0-9]+$)")
@@ -34,6 +36,8 @@ class UserResource(Resource):
         else:
             new_user = User(username=username, password=password, email=email)
             new_user.roles.append('user')
+            if admin == "True":
+                new_user.roles.append('admin')
             new_user.save()
             token = new_user.generate_token()
             new_user = new_user.view()           

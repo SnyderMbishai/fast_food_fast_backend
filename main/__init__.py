@@ -1,6 +1,6 @@
 '''Create application.'''
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Api
 
 from .config import configurations
@@ -21,8 +21,8 @@ def create_app(configuration):
     app_context = app.app_context()
     app_context.push()
     api = Api(app)
-    api.add_resource(
-        WelcomeResource, '/', '/api/v1')
+    # api.add_resource(
+    #     WelcomeResource, '/', '/api/v1')
     api.add_resource(
         UserResource, '/api/v1/users/signup',)
     api.add_resource(
@@ -33,4 +33,9 @@ def create_app(configuration):
         OrderResource, '/api/v1/orders/', '/api/v1/orders/<int:order_id>')
     api.add_resource(
         OrderManagement, '/api/v1/orders/accept/<int:order_id>')
+    
+    @app.route("/")
+    def docs():
+        return render_template("documentation.html")
+    
     return app

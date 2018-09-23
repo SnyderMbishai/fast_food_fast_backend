@@ -86,10 +86,10 @@ class OrderResource(Resource):
 
         data = request.get_json(force=True)
         new_data = data.get('new_data')
-        print(new_data)
         payload = self.get_role_and_user_id()
         user_id = payload['user_id']
 
+        order_id=int(order_id)
         order = Order.get(id=order_id)
         if not order:
             return {'message': 'Order does not exist.'}, 404
@@ -103,6 +103,22 @@ class OrderResource(Resource):
         return {
             'message': 'You do not have permission to edit this order.'
         }, 403
+
+    @login_required
+    @admin_required
+    def delete(self, order_id):
+        '''Method for deleting an order.'''
+
+        order = Order.get_by_key(id=order_id)
+        if not order:
+            return {'message': 'Order does not exist'}, 404
+        order.delete()
+        return{
+            'message': 'Successfully deleted Order {}.'.format(order_id)
+        }, 200
+        
+
+
 
     @login_required
     @admin_required
