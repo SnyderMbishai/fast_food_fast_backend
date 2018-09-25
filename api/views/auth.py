@@ -5,7 +5,7 @@ from api.models import User
 
 
 class AuthResource(Resource):
-    """Register new user."""
+    """Login a user."""
 
     parser = reqparse.RequestParser()
     parser.add_argument('username', required=True, type=str, help='Username (str) is required.')
