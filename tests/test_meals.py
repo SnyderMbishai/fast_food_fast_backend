@@ -1,7 +1,7 @@
 '''Tests meal resource.'''
 
 from json import loads
-from .base import BaseCase
+from tests.base import BaseCase
 
 MEALS_URL = '/api/v1/meals/'
 MEAL_URL = '/api/v1/meals/1'

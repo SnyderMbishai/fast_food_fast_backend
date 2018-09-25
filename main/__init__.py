@@ -3,7 +3,7 @@
 from flask import Flask, render_template
 from flask_restful import Api
 
-from .config import configurations
+from main.config import configurations
 from api.views.welcome import WelcomeResource
 from api.views.user import UserResource
 from api.views.auth import AuthResource
