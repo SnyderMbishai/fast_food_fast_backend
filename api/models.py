@@ -148,6 +148,14 @@ class User(Base):
             'id': self.id
         }
 
+    @staticmethod
+    def make_user_admin(user):
+        '''Make a user an admin.'''
+
+        user.roles.append('admin')
+        user.save()
+
+
 
 class Meal(Base):
     '''Meal model.'''
