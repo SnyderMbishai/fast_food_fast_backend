@@ -1,6 +1,7 @@
 '''User resource.'''
 
 import re
+import json
 from flask_restful import Resource, reqparse
 from api.models import User
 
@@ -28,20 +29,24 @@ class UserResource(Resource):
         if not re.match(username_format, username):
             return {'message': 'Invalid username.'}, 400
         elif not re.match(email_format, email):
-            return {'message': 'Invalid email.'}, 400
+            return {
+                'message': 'Invalid email.Example of a valid one:hero@gmail.com'
+                }, 400
         elif password != confirm_pwd:
             return{'message':"passwords do not match!"}
         elif len(password)<8:
             return {'message': 'Invalid password. Password should be 8 or more characters long.'}, 400
-        elif User.get_by_key(username=username) or User.get_by_key(email=email):
-            return {'message': 'Username/Email not available.'}, 400
-        else:
-            new_user = User(username=username, password=password, email=email)
-            new_user.roles.append('user')
-            new_user.save()
-            token = new_user.generate_token()
-            new_user = new_user.view()           
-            return {
-                'message': 'User registration successful',
-                'user': new_user,
-                'token': token }, 201
+        elif User.get_by_key(username=username):
+            return {'message': 'Username already taken, if you are registered,please login to continue.'}, 400
+        elif User.get_by_key(email=email):
+            return {'message': 'Email already taken, if you are registered, please login to continue.'}, 400
+
+        new_user = User(username=username, password=password, email=email)
+        new_user.roles.append('user')
+        new_user.save()
+        token = new_user.generate_token()
+        new_user = new_user.view()           
+        return {
+            'message': 'User registration successful',
+            'user': new_user,
+            'token': token }, 201
