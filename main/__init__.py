@@ -8,8 +8,8 @@ from api.views.welcome import WelcomeResource
 from api.views.user import UserResource
 from api.views.auth import AuthResource
 from api.views.meals import MealResource
-from api.views.orders import OrderResource
-from api.views.orders import OrderManagement
+from api.views.orders import OrderResource, OrderManagement
+from api.views.manage_user import ManageUsersResource
 
 
 def create_app(configuration):
@@ -24,7 +24,7 @@ def create_app(configuration):
     # api.add_resource(
     #     WelcomeResource, '/', '/api/v1')
     api.add_resource(
-        UserResource, '/api/v1/users/signup',)
+        UserResource, '/api/v1/users/signup')
     api.add_resource(
         AuthResource, '/api/v1/users/signin')
     api.add_resource(
@@ -33,6 +33,8 @@ def create_app(configuration):
         OrderResource, '/api/v1/orders/', '/api/v1/orders/<int:order_id>')
     api.add_resource(
         OrderManagement, '/api/v1/orders/accept/<int:order_id>')
+    api.add_resource(
+        ManageUsersResource, '/api/v1/users/manage/<int:user_id>')
     
     @app.route("/")
     def docs():
