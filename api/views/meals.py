@@ -24,10 +24,17 @@ class MealResource(Resource):
         arguments = MealResource.parser.parse_args()
         name = arguments.get('name')
         price = arguments.get('price')
+        name_format = re.compile(r"([a-zA-Z0-9])")
+
+        if not request.get_json(force=True):
+            return{'message':"make sure the input is a dictionary"}
+
+        if not re.match(name_format, name):
+            return{'message': "meal name should not contain special characters!"}
 
         meal_exists = Meal.get_by_key(name=name)
         if meal_exists:
-            return {'message': 'Meal with that name already exists.'}, 202
+            return {'message': 'Meal with that name already exists.'}, 403
         meal = Meal(name=name, price=price)
         meal = meal.save()
 
@@ -60,11 +67,16 @@ class MealResource(Resource):
         name = json_data.get('name', None)
         price = json_data.get('price', None)
         new_data = {}
+        name_format = re.compile(r"([a-zA-Z0-9])")
         if name:
-            if isinstance(name, str):
-                new_data.update({'name': name})
-            else:
-                return {'message': 'Name should be a string.'}, 400
+            if not Meal.get_by_key(name=name):
+                if not re.match(name_format, name):
+                    return{'message': "meal name should not contain special characters!"}
+                elif isinstance(name, str):
+                    new_data.update({'name': name})
+                else:
+                    return {'message': 'Name should be a string.'}, 400
+            return{'message': "A meal with that name exists!"}
         if price:
             if isinstance(price, int):
                 new_data.update({'price': price})
