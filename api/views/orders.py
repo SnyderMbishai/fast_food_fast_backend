@@ -163,4 +163,4 @@ class OrderManagement(Resource):
             return {
                 'message': 'Order {} has been declined.'.format(order_id)}, 200
         # you cannot accept/decline an already completed order
-        return {'message': 'This order has already been completed.'}, 202
+        return {'message': 'This order has already been completed.'}, 200
