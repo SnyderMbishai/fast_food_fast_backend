@@ -45,7 +45,7 @@ class TestUser(BaseCase):
 
         # test signup using inavalid password
         self.user_data_3.update(
-            {'username': 'user3', 'email': 'user3@mail.com', 'password': ''})
+            {'username': 'user3', 'email': 'user3@mail.com', 'password': '', 'confirm_password': ''})
         response = self.client.post(
             '/api/v1/users/signup', data=self.user_data_3)
         self.assertEqual(400, response.status_code)

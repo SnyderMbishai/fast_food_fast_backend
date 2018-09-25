@@ -33,19 +33,22 @@ class BaseCase(TestCase):
         self.user_data_1 = {
             'username': 'user',
             'email': 'user@mail.com',
-            'password': 'password'
+            'password': 'password',
+            'confirm_password': 'password'
         }
 
         self.user_data_2 = {
             'username': '',
             'email': 'user2@mail.com',
-            'password': 'password'
+            'password': 'password',
+            'confirm_password': 'password'
         }
 
         self.user_data_3 = {
             'username': 'user3',
             'email': 'user2mail.com',
-            'password': 'password'
+            'password': 'password',
+            'confirm_password': 'password'
         }
 
         self.valid_meal_data = {
