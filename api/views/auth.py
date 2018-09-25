@@ -18,8 +18,9 @@ class AuthResource(Resource):
         password = arguments.get('password')
         username = arguments.get('username')
         user = User.get_by_key(username=username)
-        if not user or not user.check_password(password=password):
-            return {'message': 'Username/Password Invalid.'}, 401
-        token = user.generate_token()
-
-        return {'message': 'User login successful.', 'token': token }, 200
+        if user:                
+            if  not user.check_password(password=password):
+                return {'message': 'Wrong password.'}, 401
+            token = user.generate_token()
+            return {'message': 'User login successful.', 'token': token }, 200
+        return{'message':"Username not registered. Correct it or register first."}
