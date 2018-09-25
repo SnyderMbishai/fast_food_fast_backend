@@ -1,7 +1,7 @@
 '''Test models.'''
 
 from api.models import Meal, Order, User
-from .base import BaseCase
+from tests.base import BaseCase
 
 
 class TestModels(BaseCase):
