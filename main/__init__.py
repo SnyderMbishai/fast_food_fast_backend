@@ -4,12 +4,12 @@ from flask import Flask, render_template
 from flask_restful import Api
 
 from main.config import configurations
-from api.views.welcome import WelcomeResource
-from api.views.user import UserResource
-from api.views.auth import AuthResource
-from api.views.meals import MealResource
-from api.views.orders import OrderResource, OrderManagement
-from api.views.manage_user import ManageUsersResource
+from api.v1.views.welcome import WelcomeResource
+from api.v1.views.user import UserResource
+from api.v1.views.auth import AuthResource
+from api.v1.views.meals import MealResource
+from api.v1.views.orders import OrderResource, OrderManagement
+from api.v1.views.manage_user import ManageUsersResource
 
 
 def create_app(configuration):

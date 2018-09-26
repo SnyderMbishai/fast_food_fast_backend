@@ -2,7 +2,7 @@
 from flask import request
 from flask_restful import Resource
 
-from api.models import Meal, Order, User
+from api.v1.models import Meal, Order, User
 from api.helpers.decorators import login_required, admin_required
 
 

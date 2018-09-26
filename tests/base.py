@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 
-from api.models import db, Meal, Order, User
+from api.v1.models import db, Meal, Order, User
 from main import create_app
 
 
