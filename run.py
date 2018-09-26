@@ -2,7 +2,7 @@
 import os
 
 from main import create_app
-from api.models import User
+from api.v1.models import User
 
 #create a super user
 user = User(username='Administrator',password='pass400&', email='admin@admin.com')

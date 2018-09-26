@@ -1,6 +1,6 @@
 '''Test models.'''
 
-from api.models import Meal, Order, User
+from api.v1.models import Meal, Order, User
 from tests.base import BaseCase
 
 

@@ -6,7 +6,7 @@ from json import JSONDecodeError
 from flask import request
 from flask_restful import Resource, reqparse
 
-from api.models import Meal
+from api.v1.models import Meal
 from api.helpers.decorators import login_required, admin_required
 
 
