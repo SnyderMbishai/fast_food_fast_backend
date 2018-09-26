@@ -1,11 +1,12 @@
 """User resource."""
 import re
+from flask import request
 from flask_restful import Resource, reqparse
 from api.models import User
 
 
 class AuthResource(Resource):
-    """Register new user."""
+    """Login a user."""
 
     parser = reqparse.RequestParser()
     parser.add_argument('username', required=True, type=str, help='Username (str) is required.')
@@ -18,8 +19,12 @@ class AuthResource(Resource):
         password = arguments.get('password')
         username = arguments.get('username')
         user = User.get_by_key(username=username)
-        if not user or not user.check_password(password=password):
-            return {'message': 'Username/Password Invalid.'}, 401
-        token = user.generate_token()
 
-        return {'message': 'User login successful.', 'token': token }, 200
+        # if request.headers.get('content_type') !=  'application/json':
+        #     return{'message':"Make sure content_type is application/json"}
+        if user:                
+            if  not user.check_password(password=password):
+                return {'message': 'Wrong password.'}, 401
+            token = user.generate_token()
+            return {'message': 'User login successful.', 'token': token }, 200
+        return{'message':"Username not registered. Correct it or register first."},401
