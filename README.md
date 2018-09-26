@@ -10,6 +10,10 @@
 
 https://f-f-f-v1.herokuapp.com/
 
+### Postman Documentation
+
+https://documenter.getpostman.com/view/4146922/RWaRM5Ew
+
 ### Prerequisites
 
 1. Python 3: https://www.python.org/downloads/

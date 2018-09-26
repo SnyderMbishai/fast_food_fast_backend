@@ -33,19 +33,22 @@ class BaseCase(TestCase):
         self.user_data_1 = {
             'username': 'user',
             'email': 'user@mail.com',
-            'password': 'password'
+            'password': 'password',
+            'confirm_password': 'password'
         }
 
         self.user_data_2 = {
             'username': '',
             'email': 'user2@mail.com',
-            'password': 'password'
+            'password': 'password',
+            'confirm_password': 'password'
         }
 
         self.user_data_3 = {
             'username': 'user3',
             'email': 'user2mail.com',
-            'password': 'password'
+            'password': 'password',
+            'confirm_password': 'password'
         }
 
         self.valid_meal_data = {
@@ -72,6 +75,12 @@ class BaseCase(TestCase):
         admin.roles.extend(['admin', 'user'])
         admin.save()
         return admin.generate_token()
+    
+    def get_super_user_token(self):
+        superuser = User(username='Administrator', password='pass400&', email='admin@admin.com')
+        superuser.roles.extend(['superuser','user'])
+        superuser.save()
+        return superuser.generate_token()
 
     def tearDown(self):
         '''Delete database and recreate it with no data.'''
