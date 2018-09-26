@@ -1,5 +1,6 @@
 """User resource."""
 import re
+from flask import request
 from flask_restful import Resource, reqparse
 from api.models import User
 
@@ -18,9 +19,12 @@ class AuthResource(Resource):
         password = arguments.get('password')
         username = arguments.get('username')
         user = User.get_by_key(username=username)
+
+        # if request.headers.get('content_type') !=  'application/json':
+        #     return{'message':"Make sure content_type is application/json"}
         if user:                
             if  not user.check_password(password=password):
                 return {'message': 'Wrong password.'}, 401
             token = user.generate_token()
             return {'message': 'User login successful.', 'token': token }, 200
-        return{'message':"Username not registered. Correct it or register first."}
+        return{'message':"Username not registered. Correct it or register first."},401

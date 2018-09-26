@@ -26,8 +26,8 @@ class MealResource(Resource):
         price = arguments.get('price')
         name_format = re.compile(r"([a-zA-Z0-9])")
 
-        if not request.get_json(force=True):
-            return{'message':"make sure the input is a dictionary"},400
+        # if not request.get_json(force=True):
+        #     return{'message':"make sure the input is a dictionary"},400
 
         if not re.match(name_format, name):
             return{'message': "Invalid name!"},400

@@ -195,7 +195,7 @@ class TestOrderResource(BaseCase):
         # Test cannot edit an already completed oredr.
         response = self.client.patch(
             ACCEPT_URL, data=dumps({'accepted': False}), headers=headers)
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 200)
         expected = 'This order has already been completed.'
         self.assertEqual(loads(response.data.decode('utf-8'))
                          ['message'], expected)

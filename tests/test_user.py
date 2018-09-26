@@ -23,7 +23,7 @@ class TestUser(BaseCase):
         response = self.client.post(
             '/api/v1/users/signup', data=self.user_data_1)
         self.assertEqual(400, response.status_code)
-        expected = {'message': 'Username/Email not available.'}
+        expected = {'message': 'Username already taken, if you are registered,please login to continue.'}
         self.assertEqual(expected['message'], loads(
             response.data.decode('utf-8'))['message'])
 
@@ -39,7 +39,7 @@ class TestUser(BaseCase):
         response = self.client.post(
             '/api/v1/users/signup', data=self.user_data_3)
         self.assertEqual(400, response.status_code)
-        expected = {'message': 'Invalid email.'}
+        expected = {'message': 'Invalid email.Example of a valid one:hero@gmail.com'}
         self.assertEqual(expected['message'], loads(
             response.data.decode('utf-8'))['message'])
 

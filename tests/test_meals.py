@@ -1,6 +1,7 @@
 '''Tests meal resource.'''
 
-from json import loads
+
+from json import loads, dumps
 from tests.base import BaseCase
 
 MEALS_URL = '/api/v1/meals/'
@@ -26,10 +27,14 @@ class TestMealResource(BaseCase):
         # Using duplicate meal.
         response = self.client.post(
             MEALS_URL, data=self.valid_meal_data, headers=headers)
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 409)
         expected = 'Meal with that name already exists.'
         self.assertEqual(loads(response.data.decode('utf-8'))
                          ['message'], expected)
+        #Using invalid name
+        response = self.client.post(
+            MEALS_URL, data={'name':"@lop",'price':600}, headers=headers)
+        self.assertEqual(400,response.status_code)
         # Using invalid data.
         response = self.client.post(
             MEALS_URL, data=self.invalid_meal_data, headers=headers)
@@ -91,8 +96,15 @@ class TestMealResource(BaseCase):
     def test_can_edit_meal(self):
         '''Test editing of meals.'''
 
-        pass
-
+        #get token
+        token = self.get_admin_token()
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+        # create meal to edit
+        response1 = self.client.post(
+            MEALS_URL, data=self.valid_meal_data, headers=headers)
+        self.assertEqual(response1.status_code, 201)
+        #edit meal
+      
     def test_only_admin_can_edit_meal(self):
         '''Test protection of meals.'''
 
@@ -106,8 +118,9 @@ class TestMealResource(BaseCase):
             'Authorization': 'Bearer {}'.format(self.get_user_token())}
         self.meal1.delete()  # Remove extra meal.
         # Create meal.
-        self.client.post(
+        res=self.client.post(
             MEALS_URL, data=self.valid_meal_data, headers=headers)
+        print(res)
         response1 = self.client.get(MEALS_URL, headers=headers)
         # Confirm meal creation.
         self.assertTrue(loads(response1.data.decode('utf-8'))['meals'])
