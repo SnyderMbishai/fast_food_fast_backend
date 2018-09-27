@@ -43,13 +43,13 @@ class Meal(object):
         cur.execute(query)
         meals = cur.fetchall()
         return meals
-
-    def delete_meal(self, id):
+    @classmethod
+    def delete(cls, id):
         '''Delete a user from db.'''
 
         query = "DELETE FROM meals WHERE id={}".format(id)
         cur.execute(query)
-        self.save()
+        cls.save(cls)
 
     @classmethod
     def update(cls, id, new_data):

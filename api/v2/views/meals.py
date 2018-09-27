@@ -99,3 +99,15 @@ class DBMealResource(Resource):
                 'message': 'Meal has been updated successfully.',
                 'new_meal': meal}, 200
         return {'message': 'Meal does not exist.'}, 404
+
+    @admin_required
+    def delete(self, meal_id):
+        '''Delete a meal.'''
+
+        meal = Meal.get(id=meal_id)
+        if meal:
+            Meal.delete(meal_id)
+            return{
+                'message': 'Meal {} successfully deleted.'.format(meal_id)
+            }, 200
+        return {'message': 'Meal does not exist'}, 404

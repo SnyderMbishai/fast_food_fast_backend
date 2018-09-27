@@ -135,7 +135,7 @@ class TestMealResource(BaseCase):
     def test_can_delete_meal(self):
         '''Test deletion of meals.'''
         self.meal1.add_meal()
-        headers = {'Authorization': 'Bearer {}'.format(self.get_admin_token())}
+
         non_admin_headers = {
             'Authorization': 'Bearer {}'.format(self.get_user_token())}
 
@@ -144,6 +144,7 @@ class TestMealResource(BaseCase):
         self.assertEqual(
             loads(response2.data.decode('utf-8'))['message'],
             'This action requires an admin token.')
+        headers = {'Authorization': 'Bearer {}'.format(self.get_admin_token())}
         response3 = self.client.delete(MEAL_URL, headers=headers)
 
         self.assertEqual(
