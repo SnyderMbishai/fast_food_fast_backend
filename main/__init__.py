@@ -12,6 +12,8 @@ from api.v1.views.meals import MealResource
 from api.v1.views.orders import OrderResource, OrderManagement
 from api.v1.views.manage_user import ManageUsersResource
 #v2
+from api.v2.views.user import DBUserResource
+from api.v2.views.auth import DBAuthResource
 
 
 
@@ -43,9 +45,10 @@ def create_app(configuration):
         ManageUsersResource, '/api/v1/users/manage/<int:user_id>')
 
     #v2 urls
-    # api.add_resource()
-    # api.add_resource()
-
+    api.add_resource(
+        DBUserResource, '/api/v2/users/signup')
+    api.add_resource(
+        DBAuthResource, '/api/v2/users/signin')
 
     app.register_blueprint(api_blueprint)
     
