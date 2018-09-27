@@ -1,7 +1,7 @@
 """Test the user management funciton."""
 from json import loads, dumps
 
-from tests.base import BaseCase
+from tests.v1.base import BaseCase
 
 MNG_URL = '/api/v1/users/manage/1'
 class TestUserManagement(BaseCase):
