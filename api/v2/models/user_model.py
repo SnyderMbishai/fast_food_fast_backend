@@ -45,10 +45,26 @@ class User(object):
     def get(**kwargs):
         '''Get user by key'''
         for key, val in kwargs.items():
-            querry="SELECT * FROM users WHERE {}='{}'".format(key,val)
-            cur.excecute(querry)
+            query="SELECT * FROM users WHERE {}='{}'".format(key,val)
+            cur.excecute(query)
             user = cur.fetchone()
             return user
+            
+    @staticmethod
+    def get_all():
+        '''Get all users.'''
+
+        query="SELECT * FROM users"
+        cur.excecute(query)
+        users = cur.fetchall()
+        return users
+    
+    def delete_user(self):
+        '''Delete a user from db.'''
+
+        query = "DELETE FROM users WHERE id={}".format(self.id)
+        cur.execute(query)
+        self.save()
 
     def make_hash(self, password):
         '''Generate hash of password.'''
