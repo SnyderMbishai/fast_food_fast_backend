@@ -29,11 +29,39 @@ def user_table(cur):
             id serial PRIMARY KEY,
             username VARCHAR NOT NULL UNIQUE,
             email VARCHAR NOT NULL UNIQUE ,
-            password VARCHAR NOT NULL
+            password VARCHAR NOT NULL,
+            roles BOOLEAN NOT NULL DEFAULT FALSE
         );
         """
     )
 #helper table for roles!reminder
+
+def roles(cur):
+    '''Create user roles.'''
+
+    cur.execute(
+        """
+        CREATE TABLE roles(
+            id serial PRIMARY KEY,
+            name VARCHAR NOT NULL);
+        """
+    )
+#many to many user-role relationship
+def user_roles(cur):
+    '''Create user roles.'''
+
+    cur.execute(
+        """
+        CREATE TABLE user_roles(
+            user_id INTERGER,
+            role_id INTERGER,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (role_id) REFERENCES users(id),
+            constraint id PRIMARY KEY (user_id, role_id)                        
+        );
+        """
+    )
+
 
 def meals_table(cur):
     '''Define meals table'''
@@ -54,7 +82,28 @@ def orders_table(cur):
     cur.execute(
         """
         CREATE TABLE orders(
-            id serial PRIMARY KEY
+            id serial PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            completed BOOLEAN NOT NULL DEFAULT FALSE,
+            accepted BOOLEAN NOT NULL DEFAULT FALSE,
+            created_at FLOAT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+        """
+    )
+
+def order_item(cur):
+    '''Create order item.'''
+
+    cur.execute(
+        """
+        CREATE TABLE order_items(
+            id serial PRIMARY KEY,
+            meal_id INTERGER NOT NULL,
+            order_id INTERGER NOT NULL,
+            quantity INTERGER NOT NULL,
+            FOREIGN KEY (meal_id) REFERENCES meals(id),
+            FOREIGN KEY (order_id) REFERENCES orders(id)
         );
         """
     )
