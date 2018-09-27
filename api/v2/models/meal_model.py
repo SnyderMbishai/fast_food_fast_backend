@@ -38,7 +38,7 @@ class Meal(object):
         '''Get all meals.'''
 
         query="SELECT * FROM meals"
-        cur.excecute(query)
+        cur.execute(query)
         meals = cur.fetchall()
         return meals
 
