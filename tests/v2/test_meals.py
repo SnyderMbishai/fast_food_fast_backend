@@ -97,51 +97,63 @@ class TestMealResource(BaseCase):
         self.assertEqual(loads(response.data.decode('utf-8'))
                          ['message'], expected)
 
-    # def test_can_edit_meal(self):
-    #     '''Test editing of meals.'''
+    def test_can_edit_meal(self):
+        '''Test editing of meals.'''
+        self.meal1.add_meal()
+        token = self.get_admin_token()
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+        #  edit meal
+        response = self.client.put(
+            MEAL_URL, data=dumps({'name': 'newmeal'}), headers=headers)
+        # self.assertEqual(response.status_code, 200)
+        expected = 'Meal has been updated successfully.'
+        self.assertEqual(loads(response.data.decode('utf-8'))
+                         ['message'], expected)
 
-    #     #get token
-    #     token = self.get_admin_token()
-    #     headers = {'Authorization': 'Bearer {}'.format(token)}
-    #     # create meal to edit
-    #     response1 = self.client.post(
-    #         MEALS_URL, data=self.valid_meal_data, headers=headers)
-    #     self.assertEqual(response1.status_code, 201)
-    #     #edit meal
+        # invalid data
+        response = self.client.put(
+            MEAL_URL, data=dumps({'name': 12}), headers=headers)
+        self.assertEqual(response.status_code, 400)
+        expected = 'Invalid name!'
+        self.assertEqual(loads(response.data.decode('utf-8'))
+                         ['message'], expected)
 
-    # def test_only_admin_can_edit_meal(self):
+    def test_only_admin_can_edit_meal(self):
         '''Test protection of meals.'''
+        self.meal1.add_meal()
+        token = self.get_user_token()
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+        #  edit meal
+        response = self.client.put(
+            MEAL_URL, data=dumps({'name': 'new meal'}), headers=headers)
+        self.assertEqual(response.status_code, 403)
+        expected = 'This action requires an admin token.'
+        self.assertEqual(loads(response.data.decode('utf-8'))
+                         ['message'], expected)
 
-        pass
 
-    # def test_can_delete_meal(self):
-    #     '''Test deletion of meals.'''
+    def test_can_delete_meal(self):
+        '''Test deletion of meals.'''
+        self.meal1.add_meal()
+        headers = {'Authorization': 'Bearer {}'.format(self.get_admin_token())}
+        non_admin_headers = {
+            'Authorization': 'Bearer {}'.format(self.get_user_token())}
 
-    #     headers = {'Authorization': 'Bearer {}'.format(self.get_admin_token())}
-    #     non_admin_headers = {
-    #         'Authorization': 'Bearer {}'.format(self.get_user_token())}
-    #     self.meal1.delete()  # Remove extra meal.
-    #     # Create meal.
-    #     res=self.client.post(
-    #         MEALS_URL, data=self.valid_meal_data, headers=headers)
-    #     print(res)
-    #     response1 = self.client.get(MEALS_URL, headers=headers)
-    #     # Confirm meal creation.
-    #     self.assertTrue(loads(response1.data.decode('utf-8'))['meals'])
-    #     # Test non-admin cannot detete meal.
-    #     response2 = self.client.delete(MEAL_URL, headers=non_admin_headers)
-    #     self.assertEqual(
-    #         loads(response2.data.decode('utf-8'))['message'],
-    #         'This action requires an admin token.')
-    #     response3 = self.client.delete(MEAL_URL, headers=headers)
-    #     response4 = self.client.get(MEALS_URL, headers=headers)
-    #     self.assertEqual(
-    #         loads(response3.data.decode('utf-8'))['message'], 'Meal 1 successfully deleted.')
+        # Test non-admin cannot detete meal.
+        response2 = self.client.delete(MEAL_URL, headers=non_admin_headers)
+        self.assertEqual(
+            loads(response2.data.decode('utf-8'))['message'],
+            'This action requires an admin token.')
+        response3 = self.client.delete(MEAL_URL, headers=headers)
 
-    #     self.assertEqual(loads(response4.data.decode('utf-8'))
-    #                      ['message'], 'No meals found.')
-    #     # Attempt deleting nonexistent meal.
-    #     response5 = self.client.delete(
-    #         '/api/v2/meals/10', headers=headers)
-    #     self.assertEqual(
-    #         loads(response5.data.decode('utf-8'))['message'], 'Meal does not exist')
+        self.assertEqual(
+            loads(response3.data.decode('utf-8'))['message'], 'Meal 1 successfully deleted.')
+
+        response4 = self.client.get(MEALS_URL, headers=headers)
+        self.assertEqual(loads(response4.data.decode('utf-8'))
+                         ['message'], 'No meals found.')
+        # Attempt deleting nonexistent meal.
+        response5 = self.client.delete(
+            '/api/v2/meals/10', headers=headers)
+        self.assertEqual(
+            loads(response5.data.decode('utf-8'))['message'], 'Meal does not exist')

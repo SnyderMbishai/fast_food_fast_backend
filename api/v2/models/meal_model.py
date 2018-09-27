@@ -51,6 +51,15 @@ class Meal(object):
         cur.execute(query)
         self.save()
 
+    @classmethod
+    def update(cls, id, new_data):
+        for key, val in new_data.items():
+            cur.execute("""
+            UPDATE meals SET {}='{}' WHERE id={}
+            """.format(key, val, id))
+            cls.save(cls)
+
+
     @staticmethod
     def get(**kwargs):
         '''Get meal by key'''

@@ -1,7 +1,7 @@
 '''Meals resource.'''
 
 import re
-from json import JSONDecodeError
+from json import loads
 
 from flask import request
 from flask_restful import Resource, reqparse
@@ -60,3 +60,42 @@ class DBMealResource(Resource):
         for item in meals:
             item=Meal(name=item[1],price=item[2])
         return {'meals': meals}, 200
+
+    @login_required
+    @admin_required
+    def put(self, meal_id):
+        ''' Edit a meal.'''
+        json_data = loads(request.data.decode())
+        # import pdb; pdb.set_trace()
+        name = json_data.get('name', None)
+        price = json_data.get('price', None)
+        new_data = {}
+
+
+
+        meal = Meal.get(id=meal_id)
+
+        if name:
+            try:
+                int(name)
+                return {'message': "Invalid name!"}, 400
+            except:
+                if Meal.get(name=name):
+                    return {'message': "A meal with that name exists!"}, 409
+                elif isinstance(name, str):
+                    new_data.update({'name': name})
+                else:
+                    return {'message': 'Name should be a string.'}, 400
+
+        if price:
+            if isinstance(price, int):
+                new_data.update({'price': price})
+            else:
+                return {'message': 'Price should be an integer.'}, 400
+
+        if meal:
+            meal = Meal.update(id=meal[0], new_data=new_data)
+            return {
+                'message': 'Meal has been updated successfully.',
+                'new_meal': meal}, 200
+        return {'message': 'Meal does not exist.'}, 404
