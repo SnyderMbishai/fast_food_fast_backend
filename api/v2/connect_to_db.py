@@ -33,6 +33,7 @@ def user_table(cur):
         );
         """
     )
+#helper table for roles!reminder
 
 def meals_table(cur):
     '''Define meals table'''
