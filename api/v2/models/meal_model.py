@@ -55,7 +55,7 @@ class Meal(object):
 
         for key, val in kwargs.items():
             querry="SELECT * FROM meals WHERE {}='{}'".format(key,val)
-            cur.excecute(querry)
+            cur.execute(querry)
             user = cur.fetchone()
             return user
 
