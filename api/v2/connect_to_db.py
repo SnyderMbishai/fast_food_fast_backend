@@ -70,7 +70,7 @@ def meals_table(cur):
         """
         CREATE TABLE meals(
             id serial PRIMARY KEY,
-            meal_name VARCHAR NOT NULL UNIQUE,
+            name VARCHAR NOT NULL UNIQUE,
             price INTEGER NOT NULL
         );
         """
