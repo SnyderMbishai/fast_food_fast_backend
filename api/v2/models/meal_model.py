@@ -34,6 +34,22 @@ class Meal(object):
         self.save()
 
     @staticmethod
+    def get_all():
+        '''Get all meals.'''
+
+        query="SELECT * FROM meals"
+        cur.excecute(query)
+        meals = cur.fetchall()
+        return meals
+
+    def delete_meal(self):
+        '''Delete a user from db.'''
+
+        query = "DELETE FROM meals WHERE id={}".format(self.id)
+        cur.execute(query)
+        self.save()
+
+    @staticmethod
     def get(**kwargs):
         '''Get meal by key'''
 
