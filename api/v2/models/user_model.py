@@ -19,11 +19,10 @@ class User(object):
     def __init__(self, username, password, email):
         '''Initialize a user.'''
 
-        self.id = None
         self.username = username
         self.email = email
         self.password = self.make_hash(password)
-        self.roles = []
+        # self.roles = []
     
     def save(self):
         '''save item to db'''
@@ -34,7 +33,7 @@ class User(object):
         '''Add user details to table.'''
         cur.execute(
             """
-            INSERT INTO users(username, email, password)
+            INSERT INTO users (username, email, password)
             VALUES(%s,%s,%s)
             """,
             (self.username,self.email,self.password)
@@ -46,7 +45,7 @@ class User(object):
         '''Get user by key'''
         for key, val in kwargs.items():
             query="SELECT * FROM users WHERE {}='{}'".format(key,val)
-            cur.excecute(query)
+            cur.execute(query)
             user = cur.fetchone()
             return user
             
@@ -76,9 +75,9 @@ class User(object):
 
         key = getenv('APP_SECRET_KEY')
         payload = {
-            'user_id': self.id,
+            # 'user_id': self.id,
             'username': self.username,
-            'roles': self.roles,
+            # 'roles': self.roles,
             'created_at': time(),
             'exp': time() + timedelta(hours=7).total_seconds()}
         return encode(
@@ -90,11 +89,11 @@ class User(object):
 
         key = getenv('APP_SECRET_KEY')
         return decode(token, key=key, algorithms=['HS256'])
-
-    def check_password(self, password):
+    
+    def check_password(self,username, password):
         '''Validate a user's password.'''
-
-        return True if self.make_hash(password) == self.password else False
+        user = User.get(username=username)
+        return True if self.make_hash(user[3]) == self.password else False
 
     def view(self):
         '''View a user's information.'''
@@ -102,6 +101,24 @@ class User(object):
         return {
             'username': self.username,
             'email': self.email,
-            'roles': self.roles,
-            'id': self.id
+            # 'roles': self.roles,
+            # 'id': self.id
         }
+
+    @classmethod
+    def add_role(role):
+        '''Add user details to table.'''
+        
+        cur.execute(
+            """
+            INSERT INTO roles (name)
+            VALUES(%s)
+            """,
+            (role)
+        )
+        conn.commit()
+    
+    def assign_user_a_role(self):
+        '''assign user role'''
+        pass
+
