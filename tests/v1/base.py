@@ -2,9 +2,8 @@
 from unittest import TestCase
 
 
-from api.models import db, Meal, Order, User
 from main import create_app
-
+from api.v1.models import db, Meal, Order, User
 
 class BaseCase(TestCase):
     '''Base class to be inherited by all other testcases.'''
