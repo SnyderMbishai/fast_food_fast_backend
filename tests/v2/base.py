@@ -34,8 +34,8 @@ class BaseCase(TestCase):
             {1: 2}
         )
         self.user_data_1 = {
-            'username': 'user',
-            'email': 'user@mail.com',
+            'username': 'user3',
+            'email': 'user3@mail.com',
             'password': 'password',
             'confirm_password': 'password'
         }
@@ -49,13 +49,17 @@ class BaseCase(TestCase):
 
         self.user_data_3 = {
             'username': 'user3',
-            'email': 'user2mail.com',
+            'email': 'user3mail.com',
             'password': 'password',
             'confirm_password': 'password'
         }
 
         self.valid_meal_data = {
             'name': 'Meal2',
+            'price': 100
+        }
+        self.valid_meal_data2 = {
+            'name': 'Meal3',
             'price': 100
         }
         self.invalid_meal_data = {
@@ -65,32 +69,34 @@ class BaseCase(TestCase):
 
     def get_user_token(self):
         '''Create a token for testing.'''
-
-        self.user1.roles.append('user')
-        self.user1.save()
-        return self.user1.generate_token()
+        self.user1.add_user()
+        return self.user1.generate_token(id=1)
 
     def get_admin_token(self):
         '''Create an admin token for testing.'''
 
         admin = User(
             username='admin', password='pass1234', email='admin@mail.com')
-        admin.roles.extend(['admin', 'user'])
-        admin.save()
-        return admin.generate_token()
-    
+        admin.add_user()
+        admin_id = User.get(username='admin')[0]
+        admin.assign_user_a_role('admin', admin_id)
+
+        return admin.generate_token(id=admin_id)
+
     def get_super_user_token(self):
-        superuser = User(username='Administrator', password='pass400&', email='admin@admin.com')
-        superuser.roles.extend(['superuser','user'])
+        superuser = User(username='Administrator',
+                         password='pass400&', email='admin@admin.com')
+        superuser.roles.extend(['superuser', 'user'])
         superuser.save()
         return superuser.generate_token()
 
     def tearDown(self):
         '''Delete database and recreate it with no data.'''
-        
-        conn=connect_to_db('testing')
-        cur=conn.cursor()
-        cur.execute("""DROP TABLE IF EXISTS users, meals, orders CASCADE""")
+
+        conn = connect_to_db('testing')
+        cur = conn.cursor()
+        cur.execute(
+            """DROP TABLE IF EXISTS users, meals,orders, roles, user_roles, order_items CASCADE""")
         cur.close()
         conn.commit()
         conn.close()

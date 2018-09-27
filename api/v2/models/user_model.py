@@ -13,6 +13,30 @@ conn=connect_to_db(getenv('APP_SETTINGS'))
 conn.set_session(autocommit=True)
 cur=conn.cursor()
 
+
+class Roles:
+    @staticmethod
+    def get(**kwargs):
+        '''Get role by name or id'''
+        for key, val in kwargs.items():
+            query = "SELECT * FROM roles WHERE {}='{}'".format(key, val)
+            cur.execute(query)
+            role = cur.fetchone()
+            return role
+
+
+class UserRoles:
+    @staticmethod
+    def get_user_roles(user_id):
+        '''Get user roles  by user_id'''
+
+        query = "SELECT role_id FROM user_roles WHERE user_id='{}'".format(user_id)
+        cur.execute(query)
+        role_ids = cur.fetchall()
+        print('---->',role_ids)
+        return [Roles.get(id=role_id[0])[1] for role_id in role_ids]
+
+
 class User(object):
     '''User model.'''
 
@@ -23,11 +47,13 @@ class User(object):
         self.email = email
         self.password = self.make_hash(password)
         # self.roles = []
-    
+
     def save(self):
         '''save item to db'''
-
-        conn.commit()
+        try:
+            conn.commit()
+        except:
+            conn.rollback()
 
     def add_user(self):
         '''Add user details to table.'''
@@ -38,7 +64,20 @@ class User(object):
             """,
             (self.username,self.email,self.password)
         )
-        self.save()
+        try:
+            self.save()
+            user = User.get(username=self.username)
+            role = Roles.get(name='user')
+            cur.execute(
+                """
+                INSERT INTO user_roles (user_id, role_id)
+                VALUES(%s,%s)
+                """,
+                (user[0], role[0])
+            )
+            self.save()
+        except Exception as e:
+            raise e
 
     @staticmethod
     def get(**kwargs):
@@ -48,20 +87,25 @@ class User(object):
             cur.execute(query)
             user = cur.fetchone()
             return user
-            
+
     @staticmethod
     def get_all():
         '''Get all users.'''
 
         query="SELECT * FROM users"
-        cur.excecute(query)
+        cur.execute(query)
         users = cur.fetchall()
         return users
-    
-    def delete_user(self):
+
+    @classmethod
+    def get_roles(cls, user_id):
+        roles = UserRoles.get_user_roles(user_id=user_id)
+        return roles
+
+    def delete_user(self, id):
         '''Delete a user from db.'''
 
-        query = "DELETE FROM users WHERE id={}".format(self.id)
+        query = "DELETE FROM users WHERE id={}".format(id)
         cur.execute(query)
         self.save()
 
@@ -70,14 +114,15 @@ class User(object):
 
         return sha256(password.encode('utf-8')).hexdigest()
 
-    def generate_token(self):
+    def generate_token(self, id):
         '''Create a token for a user.'''
 
         key = getenv('APP_SECRET_KEY')
+        roles = User.get_roles(user_id=id)
         payload = {
-            # 'user_id': self.id,
+            'user_id': id,
             'username': self.username,
-            # 'roles': self.roles,
+            'roles': roles,
             'created_at': time(),
             'exp': time() + timedelta(hours=7).total_seconds()}
         return encode(
@@ -89,36 +134,30 @@ class User(object):
 
         key = getenv('APP_SECRET_KEY')
         return decode(token, key=key, algorithms=['HS256'])
-    
+
     def check_password(self,username, password):
         '''Validate a user's password.'''
         user = User.get(username=username)
-        return True if self.make_hash(user[3]) == self.password else False
+        return True if self.make_hash(password) == user[3] else False
 
     def view(self):
         '''View a user's information.'''
 
         return {
             'username': self.username,
-            'email': self.email,
-            # 'roles': self.roles,
-            # 'id': self.id
+            'email': self.email
         }
 
-    @classmethod
-    def add_role(role):
-        '''Add user details to table.'''
-        
+    def assign_user_a_role(self, role, user_id):
+        '''assign user role'''
+        role_id = Roles.get(name=role)[0]
         cur.execute(
             """
-            INSERT INTO roles (name)
-            VALUES(%s)
-            """,
-            (role)
+                INSERT INTO user_roles (user_id, role_id)
+                VALUES(%s,%s)
+                """,
+            (user_id, role_id)
         )
-        conn.commit()
-    
-    def assign_user_a_role(self):
-        '''assign user role'''
-        pass
+        self.save()
+
 

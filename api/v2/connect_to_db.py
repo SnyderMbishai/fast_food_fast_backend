@@ -1,24 +1,26 @@
 '''postgreql db connection'''
 
-import os 
+import os
 from psycopg2 import connect
+
 
 def connect_to_db(db=None):
     '''create a connection to the right db.'''
 
-    if db=='testing':
+    if db == 'testing':
         db_name = os.getenv('TESTING_DB')
     else:
-        db_name= os.getenv('DEV_DB')
-   
+        db_name = os.getenv('DEV_DB')
+    print(db_name)
     try:
-        return connect( 
+        return connect(
             database=db_name,
             user=os.getenv('USER'),
             password=os.getenv('PASSWORD'),
             host=os.getenv('HOST'))
     except:
         return('Unable to connect')
+
 
 def user_table(cur):
     '''Define users table'''
@@ -34,7 +36,8 @@ def user_table(cur):
         );
         """
     )
-#helper table for roles!reminder
+# helper table for roles!reminder
+
 
 def roles(cur):
     '''Create user roles.'''
@@ -46,18 +49,20 @@ def roles(cur):
             name VARCHAR NOT NULL);
         """
     )
-#many to many user-role relationship
+# many to many user-role relationship
+
+
 def user_roles(cur):
     '''Create user roles.'''
 
     cur.execute(
         """
         CREATE TABLE user_roles(
-            user_id INTERGER,
-            role_id INTERGER,
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (role_id) REFERENCES users(id),
-            constraint id PRIMARY KEY (user_id, role_id)                        
+            user_id INTEGER,
+            role_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+            constraint id PRIMARY KEY (user_id, role_id)
         );
         """
     )
@@ -74,7 +79,8 @@ def meals_table(cur):
             price INTEGER NOT NULL
         );
         """
-    )  
+    )
+
 
 def orders_table(cur):
     '''Define orders table.'''
@@ -92,6 +98,7 @@ def orders_table(cur):
         """
     )
 
+
 def order_item(cur):
     '''Create order item.'''
 
@@ -99,30 +106,44 @@ def order_item(cur):
         """
         CREATE TABLE order_items(
             id serial PRIMARY KEY,
-            meal_id INTERGER NOT NULL,
-            order_id INTERGER NOT NULL,
-            quantity INTERGER NOT NULL,
+            meal_id INTEGER NOT NULL,
+            order_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL,
             FOREIGN KEY (meal_id) REFERENCES meals(id),
             FOREIGN KEY (order_id) REFERENCES orders(id)
         );
         """
     )
 
+
+def make_roles(cur, conn):
+    cur.execute("INSERT INTO roles(name)  VALUES('user')")
+    cur.execute("INSERT INTO roles(name) VALUES('admin')")
+    cur.execute("INSERT INTO roles(name) VALUES('superuser')")
+    conn.commit()
+
 def create(db=None):
     conn = connect_to_db(db=db)
     print(conn)
     conn.set_session(autocommit=True)
-    cur = conn.cursor()
-    cur.execute("""DROP TABLE IF EXISTS users, meals,orders CASCADE""")
 
-    #create the tables
+    cur = conn.cursor()
+    cur.execute(
+        """DROP TABLE IF EXISTS users, meals,orders, roles, user_roles, order_items CASCADE""")
+    print('holdup')
+    # create the tables
+
     user_table(cur)
+    roles(cur)
+    user_roles(cur)
     meals_table(cur)
     orders_table(cur)
-
+    order_item(cur)
+    make_roles(cur, conn)
     cur.close()
     conn.commit()
     conn.close()
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     create()

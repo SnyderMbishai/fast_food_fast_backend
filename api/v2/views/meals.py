@@ -7,7 +7,7 @@ from flask import request
 from flask_restful import Resource, reqparse
 
 from api.v2.models.meal_model import Meal
-from api.helpers.decorators import login_required, admin_required
+from api.v2.helpers.decorators import login_required, admin_required
 
 
 class DBMealResource(Resource):
@@ -17,6 +17,7 @@ class DBMealResource(Resource):
     parser.add_argument('name', required=True, type=str, help='Name (str) is required.')
     parser.add_argument('price', required=True, type=int, help='Price (int) is required.')
 
+    @admin_required
     def post(self):
         '''Create a new meal.'''
         # print(request.get_json())
@@ -24,7 +25,7 @@ class DBMealResource(Resource):
         name = arguments.get('name')
         price = arguments.get('price')
         name_format = re.compile(r"([a-zA-Z0-9])")
-        
+
 
         if not re.match(name_format, name):
             return{'message': "Invalid name!"},400
@@ -38,9 +39,10 @@ class DBMealResource(Resource):
 
         return {'message': 'Meal successfully added.', 'meal': meal}, 201
 
+    @login_required
     def get(self, meal_id=None):
         ''' Get meal/meals.'''
-        
+
         # Get a single meal.
         if meal_id:
             meal = Meal.get(id=meal_id)
@@ -53,7 +55,7 @@ class DBMealResource(Resource):
         meals = Meal.get_all()
         if not meals:
             return {'message': 'No meals found.'}, 404
-            
+
         meals = [meal for meal in meals]
         for item in meals:
             item=Meal(name=item[1],price=item[2])

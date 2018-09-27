@@ -4,7 +4,9 @@ from os import getenv
 from api.v2.connect_to_db import connect_to_db
 
 conn = connect_to_db(getenv('APP_SETTINGS'))
-cur=conn.cursor()
+conn.set_session(autocommit=True)
+cur = conn.cursor()
+
 
 class Meal(object):
     '''Meal model.'''
@@ -29,7 +31,7 @@ class Meal(object):
             INSERT INTO meals(name, price)
             VALUES(%s,%s)
             """,
-            (self.name,self.price)
+            (self.name, self.price)
         )
         self.save()
 
@@ -37,15 +39,15 @@ class Meal(object):
     def get_all():
         '''Get all meals.'''
 
-        query="SELECT * FROM meals"
+        query = "SELECT * FROM meals"
         cur.execute(query)
         meals = cur.fetchall()
         return meals
 
-    def delete_meal(self):
+    def delete_meal(self, id):
         '''Delete a user from db.'''
 
-        query = "DELETE FROM meals WHERE id={}".format(self.id)
+        query = "DELETE FROM meals WHERE id={}".format(id)
         cur.execute(query)
         self.save()
 
@@ -54,7 +56,7 @@ class Meal(object):
         '''Get meal by key'''
 
         for key, val in kwargs.items():
-            querry="SELECT * FROM meals WHERE {}='{}'".format(key,val)
+            querry = "SELECT * FROM meals WHERE {}='{}'".format(key, val)
             cur.execute(querry)
             user = cur.fetchone()
             return user
@@ -65,5 +67,5 @@ class Meal(object):
         return {
             'id': self.id,
             'name': self.name,
-            'price': self.price            
+            'price': self.price
         }
