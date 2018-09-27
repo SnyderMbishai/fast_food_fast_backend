@@ -37,3 +37,24 @@ class DBMealResource(Resource):
         meal = meal.view()
 
         return {'message': 'Meal successfully added.', 'meal': meal}, 201
+
+    def get(self, meal_id=None):
+        ''' Get meal/meals.'''
+        
+        # Get a single meal.
+        if meal_id:
+            meal = Meal.get(id=meal_id)
+            if meal:
+                meal=Meal(name=meal[1],price=meal[2])
+                return {'message': 'Meal found.', 'meal': meal.view()}, 200
+            return {'message': 'Meal not found.'}, 404
+
+        # Get all meals
+        meals = Meal.get_all()
+        if not meals:
+            return {'message': 'No meals found.'}, 404
+            
+        meals = [meal for meal in meals]
+        for item in meals:
+            item=Meal(name=item[1],price=item[2])
+        return {'meals': meals}, 200
