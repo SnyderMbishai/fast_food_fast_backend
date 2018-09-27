@@ -1,6 +1,6 @@
 '''Test orders.'''
 from json import dumps, loads
-from tests.base import BaseCase
+from tests.v1.base import BaseCase
 from api.v1.models import User, Order
 
 ORDERS_URL = '/api/v1/orders/'

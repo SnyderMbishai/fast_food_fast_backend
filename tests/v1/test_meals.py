@@ -2,7 +2,7 @@
 
 
 from json import loads, dumps
-from tests.base import BaseCase
+from tests.v1.base import BaseCase
 
 MEALS_URL = '/api/v1/meals/'
 MEAL_URL = '/api/v1/meals/1'

@@ -1,7 +1,7 @@
 """Test the user view funciton."""
 from json import loads, dumps
 
-from tests.base import BaseCase
+from tests.v1.base import BaseCase
 
 
 class TestUser(BaseCase):

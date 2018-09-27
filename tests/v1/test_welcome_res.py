@@ -1,7 +1,7 @@
 '''Test the welcome view funciton.'''
 from json import loads
 
-from tests.base import BaseCase
+from tests.v1.base import BaseCase
 
 
 class TestWelcome(BaseCase):
