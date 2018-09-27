@@ -94,5 +94,3 @@ class BaseCase(TestCase):
         cur.close()
         conn.commit()
         conn.close()
-
-        self.app_context.pop()
