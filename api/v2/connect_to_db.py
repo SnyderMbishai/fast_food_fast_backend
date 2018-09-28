@@ -109,8 +109,8 @@ def order_item(cur):
             meal_id INTEGER NOT NULL,
             order_id INTEGER NOT NULL,
             quantity INTEGER NOT NULL,
-            FOREIGN KEY (meal_id) REFERENCES meals(id),
-            FOREIGN KEY (order_id) REFERENCES orders(id)
+            FOREIGN KEY (meal_id) REFERENCES meals(id) ON DELETE CASCADE,
+            FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
         );
         """
     )

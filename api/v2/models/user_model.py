@@ -143,10 +143,20 @@ class User(object):
     def view(self):
         '''View a user's information.'''
 
+        id = User.get(username=self.username)
         return {
+            'id':id,
             'username': self.username,
             'email': self.email
         }
+
+    @staticmethod
+    def make_user_admin(id):
+        '''Superuser make user admin.'''
+        user = User.get(id=id)
+        user = User(username=user[1],password=user[2],email=user[3])
+        user.assign_user_a_role('admin', id)
+        # return user.view()
 
     def assign_user_a_role(self, role, user_id):
         '''assign user role'''
@@ -159,5 +169,3 @@ class User(object):
             (user_id, role_id)
         )
         self.save()
-
-

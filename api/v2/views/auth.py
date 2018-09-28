@@ -9,8 +9,10 @@ class DBAuthResource(Resource):
     """Login a user."""
 
     parser = reqparse.RequestParser()
-    parser.add_argument('username', required=True, type=str, help='Username (str) is required.')
-    parser.add_argument('password', required=True, type=str, help='Password (str) is required.')
+    parser.add_argument('username', required=True, type=str,
+                        help='Username (str) is required.')
+    parser.add_argument('password', required=True, type=str,
+                        help='Password (str) is required.')
 
     def post(self):
         """Resource for managing user authentication."""
@@ -22,9 +24,9 @@ class DBAuthResource(Resource):
 
         if user:
             user = User(username=username, email=user[2], password=user[3])
-            print('=====', user)
-            if  not user.check_password(username, password):
+            if not user.check_password(username, password):
                 return {'message': 'Wrong password.'}, 401
-            token = user.generate_token()
-            return {'message': 'User login successful.', 'token': token }, 200
-        return{'message':"Username not registered. Correct it or register first."},401
+            id = User.get(username=username)[0]
+            token = user.generate_token(id)
+            return {'message': 'User login successful.', 'token': token, 'id': id}, 200
+        return{'message': "Username not registered. Correct it or register first."}, 401

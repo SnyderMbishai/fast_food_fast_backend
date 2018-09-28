@@ -94,7 +94,10 @@ class DBMealResource(Resource):
                 return {'message': 'Price should be an integer.'}, 400
 
         if meal:
-            meal = Meal.update(id=meal[0], new_data=new_data)
+            id=meal[0]
+            Meal.update(id=meal[0], new_data=new_data)
+            mealn = Meal(name=meal[1],price=meal[2])
+            meal = mealn.view(id)
             return {
                 'message': 'Meal has been updated successfully.',
                 'new_meal': meal}, 200

@@ -51,26 +51,29 @@ class TestModels(BaseCase):
         self.assertEqual(1, len(Meal.get_all()))
 
         # Test deleting a meal.
-        self.meal1.delete_meal(id=1)
+        Meal.delete(id=1)
         self.assertEqual(None, Meal.get(id=1))
         self.assertEqual(0, len(Meal.get_all()))
 
-    # def test_order(self):
-    #     '''Test order model.'''
+    def test_order(self):
+        '''Test order model.'''
+        self.user1.add_user()
+        self.meal1.add_meal()
 
-    #     self.assertEqual(0,len(Meal.get_all()))
+        # Test saving an order
+        id = self.order1.add_order()
+        self.assertEqual(1, id)
 
-    #     # Test saving an order
-    #     self.order1.add_order()
-    #     self.assertEqual(1,len(Meal.get_all()))
+        # Test getting a order.
+        self.assertIsInstance(Order.get(id=1), tuple)
 
-    #     # Test getting a order.
-    #     self.assertIsInstance(Order.get(id=1), Order)
+        # Test get all orders.
+        self.assertIsInstance(Order.get_all(), list)
 
-    #     # Test get all orders.
-    #     self.assertIsInstance(Order.get_all(), dict)
+        # Test cost calculates correctly
+        self.assertEqual(Order.total(order_id=1), 100)
 
-    #     # Test deleting an order.
-    #     self.order1.delete_order()
-    #     self.assertEqual(None, Order.get(id=1))
-    #     self.assertEqual(0, len(Order.get_all()))
+        # Test deleting an order.
+        Order.delete(id=1)
+        self.assertEqual(None, Order.get(id=1))
+        self.assertEqual(0, len(Order.get_all()))

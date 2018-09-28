@@ -1,6 +1,8 @@
 '''Orders model.'''
 from os import getenv
+from time import time
 from api.v2.connect_to_db import connect_to_db
+from api.v2.models.meal_model import Meal
 
 conn=connect_to_db(getenv('APP_SETTINGS'))
 conn.set_session(autocommit=True)
@@ -9,11 +11,13 @@ cur=conn.cursor()
 class Order(object):
     '''Order model.'''
 
-    def __init__(self, user_id, meals_dict):
+    def __init__(self, user_id, meal_dict):
         '''
         Create an order.
         '''
-        self.id = None
+        self.user_id = user_id
+        self.created_at = time()
+        self.meal_dict = meal_dict
 
     def save(self):
         '''save item to db'''
@@ -24,34 +28,84 @@ class Order(object):
         '''Add order details to table.'''
         cur.execute(
             """
-            INSERT INTO orders()
-            VALUES()
-            """,
-            ()
+            INSERT INTO orders(user_id, created_at)
+            VALUES({}, {}) RETURNING id;
+            """.format(self.user_id, self.created_at)
         )
+        self.id = cur.fetchone()[0]
         self.save()
+        self.make_order_items()
+        return self.id
+
+    def make_order_items(self):
+        for key, val in self.meal_dict.items():
+            cur.execute(
+                """
+                INSERT INTO order_items(order_id, meal_id, quantity)
+                VALUES({}, {}, {})
+                """.format(self.id, key, val)
+            )
+            self.save()
 
     @staticmethod
     def get(**kwargs):
         '''Get order by key'''
         for key, val in kwargs.items():
             query="SELECT * FROM orders WHERE {}='{}'".format(key,val)
-            cur.excecute(query)
+            cur.execute(query)
             order = cur.fetchone()
             return order
+
+    @staticmethod
+    def get_meals(order_id):
+        cur.execute(
+            """
+            SELECT * FROM order_items WHERE order_id={}
+            """.format(order_id))
+        order_items = cur.fetchall()
+        return [{
+            "meal_id":item[1],
+            "order_item_id":item[0],
+            "quantity":item[3]
+        } for item in order_items]
+
+    @staticmethod
+    def view(order):
+        order_id, user_id, completed, accepted, created_at  = order[0], order[1], order[2], order[3], order[4]
+        meals = Order.get_meals(order_id)
+        total = Order.total(order_id)
+        return {
+            'order_id': order_id,
+            'user_id': user_id,
+            'completed': completed,
+            'accepted': accepted,
+            'created_at': created_at,
+            'meals': meals,
+            'total': total
+        }
 
     @staticmethod
     def get_all():
         '''Get all orders.'''
 
         query="SELECT * FROM orders"
-        cur.excecute(query)
+        cur.execute(query)
         orders = cur.fetchall()
         return orders
 
-    def delete_order(self):
+    @classmethod
+    def delete(cls, id):
         '''Delete an order from db.'''
 
-        query = "DELETE FROM orders WHERE id={}".format(self.id)
+        query = "DELETE FROM orders WHERE id={}".format(id)
         cur.execute(query)
-        self.save()
+        cls.save(cls)
+
+    @classmethod
+    def total(cls, order_id):
+        order_items = cls.get_meals(order_id=order_id)
+        cost = 0
+        for order_item in order_items:
+            cost += Meal.get_cost(meal_id=order_item["meal_id"], quantity=order_item["quantity"])
+        return cost
+

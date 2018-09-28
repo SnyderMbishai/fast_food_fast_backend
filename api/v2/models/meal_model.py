@@ -43,6 +43,12 @@ class Meal(object):
         cur.execute(query)
         meals = cur.fetchall()
         return meals
+
+    @classmethod
+    def get_cost(cls, meal_id, quantity=1):
+        price = cls.get(id=meal_id)[2]
+        return price*quantity
+
     @classmethod
     def delete(cls, id):
         '''Delete a user from db.'''
@@ -70,11 +76,11 @@ class Meal(object):
             user = cur.fetchone()
             return user
 
-    def view(self):
+    def view(self,id):
         '''View a meal information.'''
 
         return {
-            'id': self.id,
+            'id': id,
             'name': self.name,
             'price': self.price
         }

@@ -29,10 +29,7 @@ class BaseCase(TestCase):
             price=100
         )
         self.meal1.save()
-        self.order1 = Order(
-            1,
-            {1: 2}
-        )
+        self.order1 = Order(user_id=1, meal_dict={1:1})
         self.user_data_1 = {
             'username': 'user3',
             'email': 'user3@mail.com',
