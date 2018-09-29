@@ -35,7 +35,10 @@ class DBMealResource(Resource):
             return {'message': 'Meal with that name already exists.'},409
         meal = Meal(name=name, price=price)
         meal.add_meal()
-        meal = meal.view()
+        meal = Meal.get(name=name)
+        id = meal[0]
+        meal = Meal(name=meal[1],price=meal[2])
+        meal = meal.view(id)
 
         return {'message': 'Meal successfully added.', 'meal': meal}, 201
 
@@ -48,7 +51,7 @@ class DBMealResource(Resource):
             meal = Meal.get(id=meal_id)
             if meal:
                 meal=Meal(name=meal[1],price=meal[2])
-                return {'message': 'Meal found.', 'meal': meal.view()}, 200
+                return {'message': 'Meal found.', 'meal': meal.view(meal_id)}, 200
             return {'message': 'Meal not found.'}, 404
 
         # Get all meals
