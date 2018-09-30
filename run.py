@@ -5,7 +5,7 @@ from main import create_app
 from api.v1.models import User
 from api.v2.models.user_model import User as User2
 
-# create a super user without db
+# create super user without db
 user = User(username='Administrator',
             password='pass400&', email='admin@admin.com')
 user.roles.append('superuser')
@@ -21,7 +21,7 @@ if not User2.get(username='Administrator'):
 else:
     pass
 
-
+# run application
 configuration = os.getenv('APP_SETTINGS')
 app = create_app(configuration)
 port = os.getenv('PORT')
