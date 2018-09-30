@@ -1,4 +1,5 @@
 '''Order resource.'''
+
 from flask import request
 from flask_restful import Resource
 
@@ -8,11 +9,9 @@ from api.helpers.decorators import login_required, admin_required
 
 class OrderResource(Resource):
     '''Class for handling orders.'''
-
     @login_required
     def get_role_and_user_id(self):
         '''Decode token and return data.'''
-
         authorization_header = request.headers.get('Authorization')
         access_token = authorization_header.split(' ')[1]
         payload = User.decode_token(access_token)
@@ -21,7 +20,6 @@ class OrderResource(Resource):
     @login_required
     def post(self):
         '''Create an order.'''
-
         data = request.get_json(force=True)
         user_id = data.get('user_id')
         meal_dict = data.get('meal_dict')
@@ -53,14 +51,15 @@ class OrderResource(Resource):
         return {
             'message': 'Order has been created successfully.', 'order': order
         }, 201
+
     @login_required
     def get(self, order_id=None):
         '''Get order.'''
 
         payload = self.get_role_and_user_id()
         roles, user_id = payload['roles'], payload['user_id']
-
         is_admin = True if ('admin' in roles) else False
+
         if order_id:
             order = Order.get(id=order_id)
             if order:
@@ -72,28 +71,30 @@ class OrderResource(Resource):
                     'message': 'You do not have permission to see this order.'
                 }, 403
             return {'message': 'Order not found.'}, 404
+
         if is_admin:
             orders = Order.get_all()
             orders = [orders[order].view() for order in orders]
             return {'message': 'Orders found.', 'orders': orders}, 200
+
         user = User.get(id=user_id).view()
         orders = Order.get_many_by_key(user=user)
         orders = [order.view() for order in orders]
+
         return {'message': 'Orders found.', 'orders': orders}, 200
+
     @login_required
     def put(self, order_id):
         '''Edit order details.'''
-
         data = request.get_json(force=True)
         new_data = data.get('new_data')
         payload = self.get_role_and_user_id()
         user_id = payload['user_id']
-
         order_id=int(order_id)
         order = Order.get(id=order_id)
+
         if not order:
             return {'message': 'Order does not exist.'}, 404
-        print(order.user, user_id)
         if order.user['id'] == user_id:
             new_data.update({'user_id': user_id})
             new_order = order.update(new_data=new_data)
@@ -108,7 +109,6 @@ class OrderResource(Resource):
     @admin_required
     def delete(self, order_id):
         '''Method for deleting an order.'''
-
         order = Order.get_by_key(id=order_id)
         if not order:
             return {'message': 'Order does not exist'}, 404
@@ -116,9 +116,6 @@ class OrderResource(Resource):
         return{
             'message': 'Successfully deleted Order {}.'.format(order_id)
         }, 200
-        
-
-
 
     @login_required
     @admin_required
@@ -140,7 +137,7 @@ class OrderManagement(Resource):
     @admin_required
     def patch(self, order_id):
         '''Accept or decline order.'''
-        
+
         data = request.get_json(force=True)
         accepted = data.get('accepted')
         # Ensure accepted is a boolean.
