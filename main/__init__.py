@@ -17,6 +17,8 @@ from api.v2.views.auth import DBAuthResource
 from api.v2.views.meals import DBMealResource
 from api.v2.views.orders import DBOrderResource
 from api.v2.views.manage_user import DBManageUsersResource
+from api.v2.views.orders import DBOrderManagement
+
 
 def create_app(configuration):
     '''Create the flask app.'''
@@ -56,6 +58,8 @@ def create_app(configuration):
         DBOrderResource, '/api/v2/orders/', '/api/v2/orders/<int:order_id>')
     api.add_resource(
         DBManageUsersResource, '/api/v2/users/manage/<int:user_id>')
+    api.add_resource(
+        DBOrderManagement, '/api/v2/orders/accept/<int:order_id>')
 
     app.register_blueprint(api_blueprint)
 
