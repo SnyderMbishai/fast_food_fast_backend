@@ -7,3 +7,4 @@ __pycache__/
 .env
 ..git-credential-cache.swp
 *.pyc
+..git-credential-cache.swp
