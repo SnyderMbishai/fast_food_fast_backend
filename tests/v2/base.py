@@ -1,7 +1,6 @@
 '''Base test class.'''
 from unittest import TestCase
 
-
 from api.v2.models.meal_model import Meal
 from api.v2.models.user_model import User
 from api.v2.models.order_model import Order
@@ -83,9 +82,11 @@ class BaseCase(TestCase):
     def get_super_user_token(self):
         superuser = User(username='Administrator',
                          password='pass400&', email='admin@admin.com')
-        superuser.roles.extend(['superuser', 'user'])
-        superuser.save()
-        return superuser.generate_token()
+        superuser.add_user()
+        superuser_id = User.get(username='Administrator')[0]
+        superuser.assign_user_a_role('superuser',superuser_id)
+
+        return superuser.generate_token(id=superuser_id)
 
     def tearDown(self):
         '''Delete database and recreate it with no data.'''
