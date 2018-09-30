@@ -1,4 +1,5 @@
 '''Order resource.'''
+
 from flask import request
 from flask_restful import Resource
 
@@ -14,7 +15,6 @@ class DBOrderResource(Resource):
     @login_required
     def post(self):
         '''Create an order.'''
-
         data = request.get_json(force=True)
         user_id = data.get('user_id', None)
         meal_dict = data.get('meal_dict', None)
@@ -60,48 +60,53 @@ class DBOrderResource(Resource):
         roles, user_id = payload['roles'], payload['user_id']
         is_admin = 'admin' in roles
         if order_id:
-          order = Order.get(id=order_id)
-          if order is None:
-            return {'message': 'Order not found.'}, 404
-          print('>>>>',order[1], user_id, is_admin)
-          if order[1] == user_id or is_admin:
-            return {'message': 'Order found.', 'order': Order.view(order)}, 200
-          else:
-            return {
-                'message': 'You do not have permission to see this order.'
-            }, 403
+            order = Order.get(id=order_id)
+            if order is None:
+                return {'message': 'Order not found.'}, 404
+            if order[1] == user_id or is_admin:
+                return {'message': 'Order found.', 'order': Order.view(order)}, 200
+            else:
+                return {
+                    'message': 'You do not have permission to see this order.'
+                }, 403
         else:
-          # import pdb; pdb.set_trace()
-          if is_admin:
-            orders = Order.get_all()
-          else:
-            orders = Order.get(user_id=user_id)
-            print('all mine', orders)
-            if len(orders) == 0:
-              return {'message': 'Orders not found'}, 404
-            orders = [Order.view(order) for order in orders]
-            return {'message': 'Orders found.', 'orders': orders}, 200
-
+            if is_admin:
+                orders = Order.get_all()
+                orders = [Order.view(order) for order in orders]
+                return {'message': "orders found:", 'orders': orders},200
+            else:
+                orders = Order.get(user_id=user_id)
+                print('all mine', orders)
+                if len(orders) == 0:
+                    return {'message': 'Orders not found'}, 404
+                orders = [Order.view(order) for order in orders]
+                return {'message': 'Orders found.', 'orders': orders}, 200
 
     @login_required
     def put(self, order_id):
         '''Edit order details.'''
-
         data = request.get_json(force=True)
         new_data = data.get('new_data')
-        payload = self.get_role_and_user_id()
+        # get user_id
+        authorization_header = request.headers.get('Authorization')
+        access_token = authorization_header.split(' ')[1]
+        payload = User.decode_token(token=access_token)
         user_id = payload['user_id']
-
         order_id = int(order_id)
         order = Order.get(id=order_id)
         if not order:
             return {'message': 'Order does not exist.'}, 404
-        print(order.user, user_id)
-        if order.user['id'] == user_id:
-            new_data.update({'user_id': user_id})
-            new_order = order.update(new_data=new_data)
+        print(order[1], user_id)
+        if order[1] == user_id:
+            for key, val in new_data.items():
+                meal_id = key
+                quantity = val
+            new_info={'meal_id':meal_id}
+            new_info.update({'quantity': quantity})
+            Order.update(order_id,new_info)
+            updated_order = Order.get(id=order_id)
             return {
-                'message': 'Order updated successfully.', 'new_order': new_order
+                'message': 'Order updated successfully.', 'new_order': updated_order
             }, 200
         return {
             'message': 'You do not have permission to edit this order.'
@@ -111,11 +116,10 @@ class DBOrderResource(Resource):
     @admin_required
     def delete(self, order_id):
         '''Method for deleting an order.'''
-
-        order = Order.get_by_key(id=order_id)
+        order = Order.get(id=order_id)
         if not order:
             return {'message': 'Order does not exist'}, 404
-        order.delete()
+        Order.delete(order_id)
         return{
             'message': 'Successfully deleted Order {}.'.format(order_id)
         }, 200
@@ -124,12 +128,10 @@ class DBOrderResource(Resource):
     @admin_required
     def patch(self, order_id):
         '''Mark order as completed.'''
-
         order = Order.get(id=order_id)
         if not order:
             return {'message': 'Order does not exist.'}, 404
-        order.completed = True
-        order.save()
+        Order.complete_order(order_id)
         return {
             'message': 'Order {} has been completed.'.format(order_id)}, 200
 
@@ -141,7 +143,6 @@ class DBOrderManagement(Resource):
     @admin_required
     def patch(self, order_id):
         '''Accept or decline order.'''
-
         data = request.get_json(force=True)
         accepted = data.get('accepted')
         # Ensure accepted is a boolean.
@@ -151,16 +152,15 @@ class DBOrderManagement(Resource):
         # if order is not found
         if not order:
             return {'message': 'Order does not exist.'}, 404
-        if not order.completed:
-            # if accepted = True
-            if accepted:
-                order.accepted = accepted
-                order.save()
+        if order[2] is False:
+            # accept order
+            if accepted is True:
+                Order.accept_order(order_id, status=True)
                 return {
                     'message': 'Order {} has been accepted.'.format(order_id)
                 }, 200
             # decline order
-            order.accepted = accepted
+            Order.accept_order(order_id, status=False)
             return {
                 'message': 'Order {} has been declined.'.format(order_id)}, 200
         # you cannot accept/decline an already completed order
