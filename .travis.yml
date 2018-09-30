@@ -15,7 +15,7 @@ before_script:
   - export APP_SETTINGS=testing
   - export TESTING_DB=test_db
   - export DEV_DB=fast_food_db
-  - export DB_HOST=localhost
+  - export HOST=localhost
   - export USER='gloria'
   - export PASSWORD='bubble24'
   - source venv/bin/activate
