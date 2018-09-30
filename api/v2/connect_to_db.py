@@ -12,11 +12,13 @@ def connect_to_db(db=None):
         db_name = os.getenv('DEV_DB')
 
     try:
+
         return connect(
             database=db_name,
             user=os.getenv('USER'),
             password=os.getenv('PASSWORD'),
             host=os.getenv('HOST'))
+        print('namds')
     except:
         return('Unable to connect')
 
@@ -108,12 +110,14 @@ def order_item(cur):
         """
     )
 
+
 def make_roles(cur, conn):
     '''Add admin, user and superuser roles to the roles table.'''
     cur.execute("INSERT INTO roles(name)  VALUES('user')")
     cur.execute("INSERT INTO roles(name) VALUES('admin')")
     cur.execute("INSERT INTO roles(name) VALUES('superuser')")
     conn.commit()
+
 
 def create(db=None):
     '''Create all required tables.'''
@@ -136,6 +140,7 @@ def create(db=None):
     cur.close()
     conn.commit()
     conn.close()
+
 
 if __name__ == '__main__':
     create()

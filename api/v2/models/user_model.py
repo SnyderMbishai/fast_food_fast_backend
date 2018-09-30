@@ -11,8 +11,9 @@ from api.v2.connect_to_db import connect_to_db
 
 
 conn = connect_to_db(getenv('APP_SETTINGS'))
+print(conn)
 conn.set_session(autocommit=True)
-cur = conn.cursor()
+cur=conn.cursor()
 
 class Roles:
     @staticmethod
