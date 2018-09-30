@@ -3,6 +3,7 @@
 import re
 import json
 from flask_restful import Resource, reqparse
+
 from api.v2.models.user_model import User
 
 
@@ -45,9 +46,7 @@ class DBUserResource(Resource):
             return {'message': 'Username already taken, if you are registered,please login to continue.'}, 400
         elif User.get(email=email):
             return {'message': 'Email already taken, if you are registered, please login to continue.'}, 400
-
         new_user = User(username=username, password=password, email=email)
-        # new_user.roles.append('user')
         new_user.add_user()
         id = User.get(username=username)[0]
         token = new_user.generate_token(id)

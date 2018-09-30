@@ -1,7 +1,9 @@
 """User resource."""
+
 import re
 from flask import request
 from flask_restful import Resource, reqparse
+
 from api.v2.models.user_model import User
 
 
@@ -16,12 +18,11 @@ class DBAuthResource(Resource):
 
     def post(self):
         """Resource for managing user authentication."""
-
         arguments = DBAuthResource.parser.parse_args()
         password = arguments.get('password')
         username = arguments.get('username')
         user = User.get(username=username)
-
+        # print(user)
         if user:
             user = User(username=username, email=user[2], password=user[3])
             if not user.check_password(username, password):

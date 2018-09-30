@@ -20,12 +20,10 @@ class DBMealResource(Resource):
     @admin_required
     def post(self):
         '''Create a new meal.'''
-        # print(request.get_json())
         arguments = DBMealResource.parser.parse_args()
         name = arguments.get('name')
         price = arguments.get('price')
         name_format = re.compile(r"([a-zA-Z0-9])")
-
 
         if not re.match(name_format, name):
             return{'message': "Invalid name!"},400
@@ -39,13 +37,11 @@ class DBMealResource(Resource):
         id = meal[0]
         meal = Meal(name=meal[1],price=meal[2])
         meal = meal.view(id)
-
         return {'message': 'Meal successfully added.', 'meal': meal}, 201
 
     @login_required
     def get(self, meal_id=None):
         ''' Get meal/meals.'''
-
         # Get a single meal.
         if meal_id:
             meal = Meal.get(id=meal_id)
@@ -69,13 +65,9 @@ class DBMealResource(Resource):
     def put(self, meal_id):
         ''' Edit a meal.'''
         json_data = loads(request.data.decode())
-        # import pdb; pdb.set_trace()
         name = json_data.get('name', None)
         price = json_data.get('price', None)
         new_data = {}
-
-
-
         meal = Meal.get(id=meal_id)
 
         if name:
@@ -110,7 +102,6 @@ class DBMealResource(Resource):
     @admin_required
     def delete(self, meal_id):
         '''Delete a meal.'''
-
         meal = Meal.get(id=meal_id)
         if meal:
             Meal.delete(meal_id)

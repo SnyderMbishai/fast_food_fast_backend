@@ -6,12 +6,11 @@ from psycopg2 import connect
 
 def connect_to_db(db=None):
     '''create a connection to the right db.'''
-
     if db == 'testing':
         db_name = os.getenv('TESTING_DB')
     else:
         db_name = os.getenv('DEV_DB')
-    print(db_name)
+
     try:
         return connect(
             database=db_name,
@@ -24,7 +23,6 @@ def connect_to_db(db=None):
 
 def user_table(cur):
     '''Define users table'''
-
     cur.execute(
         """
         CREATE TABLE users(
@@ -36,7 +34,6 @@ def user_table(cur):
         );
         """
     )
-# helper table for roles!reminder
 
 
 def roles(cur):
@@ -49,12 +46,11 @@ def roles(cur):
             name VARCHAR NOT NULL);
         """
     )
+
+
 # many to many user-role relationship
-
-
 def user_roles(cur):
     '''Create user roles.'''
-
     cur.execute(
         """
         CREATE TABLE user_roles(
@@ -69,8 +65,7 @@ def user_roles(cur):
 
 
 def meals_table(cur):
-    '''Define meals table'''
-
+    '''Define meals table.'''
     cur.execute(
         """
         CREATE TABLE meals(
@@ -84,7 +79,6 @@ def meals_table(cur):
 
 def orders_table(cur):
     '''Define orders table.'''
-
     cur.execute(
         """
         CREATE TABLE orders(
@@ -101,7 +95,6 @@ def orders_table(cur):
 
 def order_item(cur):
     '''Create order item.'''
-
     cur.execute(
         """
         CREATE TABLE order_items(
@@ -115,24 +108,23 @@ def order_item(cur):
         """
     )
 
-
 def make_roles(cur, conn):
+    '''Add admin, user and superuser roles to the roles table.'''
     cur.execute("INSERT INTO roles(name)  VALUES('user')")
     cur.execute("INSERT INTO roles(name) VALUES('admin')")
     cur.execute("INSERT INTO roles(name) VALUES('superuser')")
     conn.commit()
 
 def create(db=None):
+    '''Create all required tables.'''
     conn = connect_to_db(db=db)
-    print(conn)
     conn.set_session(autocommit=True)
-
     cur = conn.cursor()
+
     cur.execute(
         """DROP TABLE IF EXISTS users, meals,orders, roles, user_roles, order_items CASCADE""")
-    print('holdup')
-    # create the tables
 
+    # create the tables
     user_table(cur)
     roles(cur)
     user_roles(cur)
@@ -140,10 +132,10 @@ def create(db=None):
     orders_table(cur)
     order_item(cur)
     make_roles(cur, conn)
+
     cur.close()
     conn.commit()
     conn.close()
-
 
 if __name__ == '__main__':
     create()

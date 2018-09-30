@@ -11,7 +11,6 @@ def login_required(func):
     def decorated(*args, **kwargs):
         authorization_header = request.headers.get('Authorization')
         if authorization_header:
-
             access_token = authorization_header.split(' ')[1]
             roles = User.decode_token(token=access_token)['roles']
             if ('user' in roles):
@@ -21,10 +20,8 @@ def login_required(func):
             return {'message': 'Ensure you have an authorization header.'}, 400
     return decorated
 
-
 def admin_required(func):
     '''Check if user has a valid admin token.'''
-
     @wraps(func)
     def decorated(*args, **kwargs):
         authorization_header = request.headers.get('Authorization')
@@ -37,7 +34,6 @@ def admin_required(func):
                 return {'message': 'This action requires an admin token.'}, 403
         return{'message': 'Ensure you have an authorization header.'}, 400
     return decorated
-
 
 def super_user_required(func):
     '''Check whether user is a super admin'''
