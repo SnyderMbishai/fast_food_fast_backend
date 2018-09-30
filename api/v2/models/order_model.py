@@ -1,8 +1,11 @@
 '''Orders model.'''
+
 from os import getenv
 from time import time
+
 from api.v2.connect_to_db import connect_to_db
 from api.v2.models.meal_model import Meal
+
 
 conn=connect_to_db(getenv('APP_SETTINGS'))
 conn.set_session(autocommit=True)
@@ -21,7 +24,6 @@ class Order(object):
 
     def save(self):
         '''save item to db'''
-
         conn.commit()
 
     def add_order(self):
@@ -38,14 +40,16 @@ class Order(object):
         return self.id
 
     def make_order_items(self):
+        '''Add an order item.'''
         for key, val in self.meal_dict.items():
             cur.execute(
                 """
                 INSERT INTO order_items(order_id, meal_id, quantity)
-                VALUES({}, {}, {})
+                VALUES({}, {}, {}) RETURNING id
                 """.format(self.id, key, val)
             )
             self.save()
+            return id
 
     @staticmethod
     def get(**kwargs):
@@ -58,6 +62,7 @@ class Order(object):
 
     @staticmethod
     def get_meals(order_id):
+        '''Get all meals of an order.'''
         cur.execute(
             """
             SELECT * FROM order_items WHERE order_id={}
@@ -71,7 +76,8 @@ class Order(object):
 
     @staticmethod
     def view(order):
-        order_id, user_id, completed, accepted, created_at  = order[0], order[1], order[2], order[3], order[4]
+        '''View order details.'''
+        order_id, user_id, completed, accepted, created_at = order[0], order[1], order[2], order[3], order[4]
         meals = Order.get_meals(order_id)
         total = Order.total(order_id)
         return {
@@ -87,7 +93,6 @@ class Order(object):
     @staticmethod
     def get_all():
         '''Get all orders.'''
-
         query="SELECT * FROM orders"
         cur.execute(query)
         orders = cur.fetchall()
@@ -96,16 +101,40 @@ class Order(object):
     @classmethod
     def delete(cls, id):
         '''Delete an order from db.'''
-
         query = "DELETE FROM orders WHERE id={}".format(id)
         cur.execute(query)
         cls.save(cls)
 
     @classmethod
     def total(cls, order_id):
+        '''Calculate total cost of an order.'''
         order_items = cls.get_meals(order_id=order_id)
         cost = 0
         for order_item in order_items:
             cost += Meal.get_cost(meal_id=order_item["meal_id"], quantity=order_item["quantity"])
         return cost
 
+    @classmethod
+    def update(cls, id, new_data):
+        '''Method for updating order details.'''
+        for key, val in new_data.items():
+            cur.execute("""
+            UPDATE order_items SET {}='{}' WHERE order_id={}
+            """.format(key, val, id))
+            cls.save(cls)
+
+    @classmethod
+    def complete_order(cls,id):
+        '''Method for completing an order'''
+        cur.execute("""
+                UPDATE orders SET completed='{}' WHERE id={}
+                """.format(True, id))
+        cls.save(cls)
+
+    @classmethod
+    def accept_order(cls, id, status):
+        '''Method for accept/declining an order.'''
+        cur.execute("""
+                UPDATE orders SET accepted='{}' WHERE id={}
+                """.format(status, id))
+        cls.save(cls)
