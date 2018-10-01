@@ -73,10 +73,9 @@ class DBOrderResource(Resource):
             if is_admin:
                 orders = Order.get_all()
                 orders = [Order.view(order) for order in orders]
-                return {'message': "orders found:", 'orders': orders},200
+                return {'message': "Orders found.", 'orders': orders},200
             else:
-                orders = Order.get(user_id=user_id)
-                print('all mine', orders)
+                orders = Order.get_all_by_user_id(user_id=user_id)
                 if len(orders) == 0:
                     return {'message': 'Orders not found'}, 404
                 orders = [Order.view(order) for order in orders]
@@ -92,21 +91,18 @@ class DBOrderResource(Resource):
         access_token = authorization_header.split(' ')[1]
         payload = User.decode_token(token=access_token)
         user_id = payload['user_id']
-        order_id = int(order_id)
         order = Order.get(id=order_id)
         if not order:
             return {'message': 'Order does not exist.'}, 404
         print(order[1], user_id)
         if order[1] == user_id:
-            for key, val in new_data.items():
-                meal_id = key
-                quantity = val
-            new_info={'meal_id':meal_id}
-            new_info.update({'quantity': quantity})
-            Order.update(order_id,new_info)
-            updated_order = Order.get(id=order_id)
+            new_info = []
+            for key, val in new_data['meals_dict'].items():
+                new_info.append({'meal_id': key, 'quantity': val})
+            new_order = Order.update(order_id, new_info)
+            new_order = Order.view(new_order)
             return {
-                'message': 'Order updated successfully.', 'new_order': updated_order
+                'message': 'Order updated successfully.', 'new_order': new_order
             }, 200
         return {
             'message': 'You do not have permission to edit this order.'
