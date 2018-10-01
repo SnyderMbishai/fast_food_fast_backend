@@ -59,6 +59,14 @@ class Order(object):
             cur.execute(query)
             order = cur.fetchone()
             return order
+    @staticmethod
+    def get_all_by_user_id(user_id):
+        '''Get orders belonging to a certain user'''
+        query = "SELECT * FROM orders WHERE user_id='{}'".format(user_id)
+        cur.execute(query)
+        orders = cur.fetchall()
+        return orders
+
 
     @staticmethod
     def get_meals(order_id):
@@ -93,7 +101,7 @@ class Order(object):
     @staticmethod
     def get_all():
         '''Get all orders.'''
-        query="SELECT * FROM orders"
+        query = "SELECT * FROM orders"
         cur.execute(query)
         orders = cur.fetchall()
         return orders
@@ -115,16 +123,37 @@ class Order(object):
         return cost
 
     @classmethod
-    def update(cls, id, new_data):
+    def update(cls, order_id, new_data):
         '''Method for updating order details.'''
-        for key, val in new_data.items():
+
+        for item in new_data:
+            meal_id, quantity = item['meal_id'], item['quantity']
+            # lookup order_item
             cur.execute("""
-            UPDATE order_items SET {}='{}' WHERE order_id={}
-            """.format(key, val, id))
+                SELECT * FROM order_items WHERE meal_id='{}' AND order_id='{}'
+            """.format(meal_id, order_id))
+            order_item = cur.fetchone()
+            if not order_item:
+                cur.execute(
+                """
+                INSERT INTO order_items(order_id, meal_id, quantity)
+                VALUES({}, {}, {}) RETURNING id
+                """.format(order_id, meal_id, quantity)
+            )
+            else:
+                if quantity <= 0:
+                    # remove item
+                    query = "DELETE FROM order_items WHERE order_id='{}' AND meal_id='{}'".format(order_id, meal_id)
+                    cur.execute(query)
+                else:
+                    cur.execute("""
+                    UPDATE order_items SET quantity='{}' WHERE order_id={} AND meal_id={}
+                    """.format(quantity, order_id, meal_id))
             cls.save(cls)
+            return cls.get(id=order_id)
 
     @classmethod
-    def complete_order(cls,id):
+    def complete_order(cls, id):
         '''Method for completing an order'''
         cur.execute("""
                 UPDATE orders SET completed='{}' WHERE id={}
