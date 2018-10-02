@@ -16,8 +16,13 @@ class DBOrderResource(Resource):
     def post(self):
         '''Create an order.'''
         data = request.get_json(force=True)
-        user_id = data.get('user_id', None)
+        # user_id = data.get('user_id', None)
         meal_dict = data.get('meal_dict', None)
+
+        authorization_header = request.headers.get('Authorization')
+        access_token = authorization_header.split(' ')[1]
+        payload = User.decode_token(token=access_token)
+        user_id = payload['user_id']
 
         if not isinstance(user_id, int):
             return {'message': 'user_id (int) is required.'}, 400
