@@ -34,10 +34,7 @@ class DBMealResource(Resource):
         meal = Meal(name=name, price=price)
         meal.add_meal()
         meal = Meal.get(name=name)
-        id = meal[0]
-        meal = Meal(name=meal[1],price=meal[2])
-        meal = meal.view(id)
-        return {'message': 'Meal successfully added.', 'meal': meal}, 201
+        return {'message': 'Meal successfully added.', 'meal': Meal.view(meal)}, 201
 
     @login_required
     def get(self, meal_id=None):
@@ -46,18 +43,15 @@ class DBMealResource(Resource):
         if meal_id:
             meal = Meal.get(id=meal_id)
             if meal:
-                meal=Meal(name=meal[1],price=meal[2])
-                return {'message': 'Meal found.', 'meal': meal.view(meal_id)}, 200
+                meal = Meal.get(id=meal_id)
+                return {'message': 'Meal found.', 'meal': Meal.view(meal=meal)}, 200
             return {'message': 'Meal not found.'}, 404
 
         # Get all meals
         meals = Meal.get_all()
         if not meals:
             return {'message': 'No meals found.'}, 404
-
-        meals = [meal for meal in meals]
-        for item in meals:
-            item=Meal(name=item[1],price=item[2])
+        meals = [Meal.view(meal) for meal in meals]
         return {'meals': meals}, 200
 
     @login_required
@@ -92,8 +86,8 @@ class DBMealResource(Resource):
             id = meal_id
             Meal.update(id=id, new_data=new_data)
             meal = Meal.get(id=id)
-            mealn = Meal(name=meal[1],price=meal[2])
-            meal = mealn.view(id)
+            # mealn = Meal(name=meal[1],price=meal[2])
+            meal = Meal.view(meal)
             return {
                 'message': 'Meal has been updated successfully.',
                 'new_meal': meal}, 200
