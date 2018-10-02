@@ -48,10 +48,7 @@ class DBUserResource(Resource):
             return {'message': 'Email already taken, if you are registered, please login to continue.'}, 400
         new_user = User(username=username, password=password, email=email)
         new_user.add_user()
-        id = User.get(username=username)[0]
-        token = new_user.generate_token(id)
         new_user = new_user.view()
         return {
             'message': 'User registration successful',
-            'user': new_user,
-            'token': token}, 201
+            'user': new_user}, 201
