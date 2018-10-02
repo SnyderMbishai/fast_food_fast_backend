@@ -73,10 +73,12 @@ class Meal(object):
             user = cur.fetchone()
             return user
 
-    def view(self, id):
+    @staticmethod
+    def view(meal):
         '''View a meal information.'''
+        id = meal[0]
         return {
             'id': id,
-            'name': self.name,
-            'price': self.price
+            'name': meal[1],
+            'price': meal[2]
         }
