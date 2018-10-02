@@ -132,7 +132,7 @@ class User(object):
 
     def view(self):
         '''View a user's information.'''
-        id = User.get(username=self.username)
+        id = User.get(username=self.username)[0]
         return {
             'id':id,
             'username': self.username,
