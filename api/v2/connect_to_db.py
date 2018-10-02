@@ -6,6 +6,7 @@ from psycopg2 import connect
 
 def connect_to_db(db=None):
     '''create a connection to the right db.'''
+    """CREATE DATABASE IF NOT EXISTS {},{}""".format(os.getenv('DEV_DB'), os.getenv('TESTING_DB'))
     if db == 'testing':
         db_name = os.getenv('TESTING_DB')
     else:
@@ -18,9 +19,8 @@ def connect_to_db(db=None):
             user=os.getenv('USER'),
             password=os.getenv('PASSWORD'),
             host=os.getenv('HOST'))
-        print('namds')
     except:
-        return('Unable to connect')
+        return "Unable to connect"
 
 
 def user_table(cur):
@@ -126,7 +126,10 @@ def create(db=None):
     cur = conn.cursor()
 
     cur.execute(
-        """DROP TABLE IF EXISTS users, meals,orders, roles, user_roles, order_items CASCADE""")
+        """
+            DROP TABLE IF EXISTS users, meals,orders, roles,
+            user_roles, order_items CASCADE
+        """)
 
     # create the tables
     user_table(cur)
