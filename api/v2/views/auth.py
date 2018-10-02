@@ -29,5 +29,5 @@ class DBAuthResource(Resource):
                 return {'message': 'Wrong password.'}, 401
             id = User.get(username=username)[0]
             token = user.generate_token(id)
-            return {'message': 'User login successful.', 'token': token, 'id': id}, 200
+            return {'token': token, 'message': 'User login successful.'}, 200
         return{'message': "Username not registered. Correct it or register first."}, 401
