@@ -11,7 +11,8 @@ conn=connect_to_db(getenv('APP_SETTINGS'))
 conn.set_session(autocommit=True)
 cur=conn.cursor()
 
-class Order(object):
+
+class Order:
     '''Order model.'''
 
     def __init__(self, user_id, meal_dict):
@@ -41,6 +42,7 @@ class Order(object):
 
     def make_order_items(self):
         '''Add an order item.'''
+        print(self.meal_dict)
         for key, val in self.meal_dict.items():
             cur.execute(
                 """
@@ -49,7 +51,6 @@ class Order(object):
                 """.format(self.id, key, val)
             )
             self.save()
-            return id
 
     @staticmethod
     def get(**kwargs):
@@ -77,7 +78,8 @@ class Order(object):
             """.format(order_id))
         order_items = cur.fetchall()
         return [{
-            "meal_id":item[1],
+            "meal_id": item[1],
+            "meal_name":Meal.get(id=item[1])[1],
             "order_item_id":item[0],
             "quantity":item[3]
         } for item in order_items]
