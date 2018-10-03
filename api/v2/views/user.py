@@ -1,7 +1,6 @@
 '''User resource.'''
 
 import re
-import json
 from flask_restful import Resource, reqparse
 
 from api.v2.models.user_model import User
@@ -41,7 +40,7 @@ class DBUserResource(Resource):
         elif password != confirm_pwd:
             return{'message': "passwords do not match!"}
         elif len(password) < 8:
-            return {'message': 'Invalid password. Password should be 8 or more characters long.'}, 400
+            return ({'message': 'Invalid password. Password should be 8 or more characters long.'}, 400)
         elif User.get(username=username):
             return {'message': 'Username already taken, if you are registered,please login to continue.'}, 400
         elif User.get(email=email):

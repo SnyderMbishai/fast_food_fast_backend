@@ -7,9 +7,9 @@ from api.v2.connect_to_db import connect_to_db
 from api.v2.models.meal_model import Meal
 
 
-conn=connect_to_db(getenv('APP_SETTINGS'))
+conn = connect_to_db(getenv('APP_SETTINGS'))
 conn.set_session(autocommit=True)
-cur=conn.cursor()
+cur = conn.cursor()
 
 
 class Order:
@@ -42,7 +42,6 @@ class Order:
 
     def make_order_items(self):
         '''Add an order item.'''
-        print(self.meal_dict)
         for key, val in self.meal_dict.items():
             cur.execute(
                 """
@@ -56,7 +55,7 @@ class Order:
     def get(**kwargs):
         '''Get order by key'''
         for key, val in kwargs.items():
-            query="SELECT * FROM orders WHERE {}='{}'".format(key,val)
+            query = "SELECT * FROM orders WHERE {}='{}'".format(key, val)
             cur.execute(query)
             order = cur.fetchone()
             return order
@@ -87,7 +86,11 @@ class Order:
     @staticmethod
     def view(order):
         '''View order details.'''
-        order_id, user_id, completed, accepted, created_at = order[0], order[1], order[2], order[3], order[4]
+        order_id = order[0]
+        user_id = order[1]
+        completed = order[2]
+        accepted = order[3]
+        created_at = order[4]
         meals = Order.get_meals(order_id)
         total = Order.total(order_id)
         return {
@@ -137,11 +140,11 @@ class Order:
             order_item = cur.fetchone()
             if not order_item:
                 cur.execute(
-                """
-                INSERT INTO order_items(order_id, meal_id, quantity)
-                VALUES({}, {}, {}) RETURNING id
-                """.format(order_id, meal_id, quantity)
-            )
+                    """
+                    INSERT INTO order_items(order_id, meal_id, quantity)
+                    VALUES({}, {}, {}) RETURNING id
+                    """.format(order_id, meal_id, quantity)
+                )
             else:
                 if quantity <= 0:
                     # remove item

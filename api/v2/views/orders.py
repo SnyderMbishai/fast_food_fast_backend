@@ -27,8 +27,8 @@ class DBOrderResource(Resource):
             return {'message': 'user_id (int) is required.'}, 400
         if not isinstance(meal_dict, dict):
             return {'message': 'meal_dict (dict) is required.'}, 400
-        if meal_dict is None: 
-            return{'message': "You haven't selected any meals"},200
+        if meal_dict is None:
+            return{'message': "You haven't selected any meals"}, 200
 
         # Check if meal ordered exist.
         meal_ids = meal_dict.keys()
@@ -79,7 +79,7 @@ class DBOrderResource(Resource):
             if is_admin:
                 orders = Order.get_all()
                 orders = [Order.view(order) for order in orders]
-                return {'message': "Orders found.", 'orders': orders},200
+                return {'message': "Orders found.", 'orders': orders}, 200
             else:
                 orders = Order.get_all_by_user_id(user_id=user_id)
                 if len(orders) == 0:

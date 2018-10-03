@@ -11,11 +11,11 @@ from api.v2.connect_to_db import connect_to_db
 
 
 conn = connect_to_db(getenv('APP_SETTINGS'))
-print(conn)
 conn.set_session(autocommit=True)
 cur = conn.cursor()
 
 class Roles:
+    '''Class for handling roles.'''
     @staticmethod
     def get(**kwargs):
         '''Get role by name or id'''
@@ -26,6 +26,7 @@ class Roles:
             return role
 
 class UserRoles:
+    '''Class for handling user roles.'''
     @staticmethod
     def get_user_roles(user_id):
         '''Get user roles  by user_id'''
@@ -76,7 +77,7 @@ class User(object):
     def get(**kwargs):
         '''Get user by key'''
         for key, val in kwargs.items():
-            query="SELECT * FROM users WHERE {}='{}'".format(key,val)
+            query = "SELECT * FROM users WHERE {}='{}'".format(key, val)
             cur.execute(query)
             user = cur.fetchone()
             return user
@@ -85,7 +86,7 @@ class User(object):
     def get_all():
         '''Get all users.'''
 
-        query="SELECT * FROM users"
+        query = "SELECT * FROM users"
         cur.execute(query)
         users = cur.fetchall()
         return users
@@ -125,7 +126,7 @@ class User(object):
         key = getenv('APP_SECRET_KEY')
         return decode(token, key=key, algorithms=['HS256'])
 
-    def check_password(self,username, password):
+    def check_password(self, username, password):
         '''Validate a user's password.'''
         user = User.get(username=username)
         return True if self.make_hash(password) == user[3] else False
@@ -143,7 +144,7 @@ class User(object):
     def make_user_admin(id):
         '''Superuser make user admin.'''
         user = User.get(id=id)
-        user = User(username=user[1],password=user[2],email=user[3])
+        user = User(username=user[1], password=user[2], email=user[3])
         user.assign_user_a_role('admin', id)
 
     def assign_user_a_role(self, role, user_id):

@@ -4,19 +4,19 @@ import os
 from psycopg2 import connect
 
 def check_if_db_exists(db_name):
-    '''check is a specified db exists.'''  
-    try:  
+    '''check is a specified db exists.'''
+    try:
         conn = connect(
-                database=db_name,
-                user=os.getenv('USER'),
-                password=os.getenv('PASSWORD'),
-                host=os.getenv('HOST'))
-        return True
-    except:        
+            database=db_name,
+            user=os.getenv('USER'),
+            password=os.getenv('PASSWORD'),
+            host=os.getenv('HOST'))
+        return True, conn
+    except:
         return False
 
 def create_databases():
-    
+    '''Function to create databases if they do notr exist.'''
     default_conn = connect(
         database=os.getenv('D_DB'),
         user='postgres',
@@ -30,11 +30,11 @@ def create_databases():
     if check_if_db_exists(dev_db) is False:
         query = "CREATE DATABASE {}".format(dev_db)
         cur.execute(query)
-    
+
     if check_if_db_exists(test_db) is False:
         query = "CREATE DATABASE {}".format(test_db)
-        cur.execute(query)  
-    
+        cur.execute(query)
+
 
 #     dev_db = "CREATE DATABASE IF NOT EXISTS " + os.getenv('DEV_DB')
 #     test_db = "CREATE DATABASE IF NOT EXISTS " + os.getenv('DEV_DB')
@@ -46,7 +46,7 @@ def connect_to_db(db=None):
         db_name = os.getenv('TESTING_DB')
     else:
         db_name = os.getenv('DEV_DB')
-        
+
     try:
 
         return connect(

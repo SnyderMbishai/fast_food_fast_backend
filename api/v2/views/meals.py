@@ -26,11 +26,11 @@ class DBMealResource(Resource):
         name_format = re.compile(r"([a-zA-Z0-9])")
 
         if not re.match(name_format, name):
-            return{'message': "Invalid name!"},400
+            return{'message': "Invalid name!"}, 400
 
         meal_exists = Meal.get(name=name)
         if meal_exists:
-            return {'message': 'Meal with that name already exists.'},409
+            return {'message': 'Meal with that name already exists.'}, 409
         meal = Meal(name=name, price=price)
         meal.add_meal()
         meal = Meal.get(name=name)

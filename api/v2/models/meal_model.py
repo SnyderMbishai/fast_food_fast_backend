@@ -76,7 +76,6 @@ class Meal(object):
     @staticmethod
     def view(meal):
         '''View a meal information.'''
-    
         return {
             'id': meal[0],
             'name': meal[1],
