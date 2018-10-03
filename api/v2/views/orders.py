@@ -16,8 +16,7 @@ class DBOrderResource(Resource):
     def post(self):
         '''Create an order.'''
         data = request.get_json(force=True)
-        # user_id = data.get('user_id', None)
-        meal_dict = data.get('meal_dict', None)
+        meal_dict = data.get('meal_dict')
 
         authorization_header = request.headers.get('Authorization')
         access_token = authorization_header.split(' ')[1]
@@ -28,6 +27,8 @@ class DBOrderResource(Resource):
             return {'message': 'user_id (int) is required.'}, 400
         if not isinstance(meal_dict, dict):
             return {'message': 'meal_dict (dict) is required.'}, 400
+        if meal_dict is None: 
+            return{'message': "You haven't selected any meals"},200
 
         # Check if meal ordered exist.
         meal_ids = meal_dict.keys()
