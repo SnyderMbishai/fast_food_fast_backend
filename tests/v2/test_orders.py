@@ -18,8 +18,8 @@ class TestOrderResource(BaseCase):
         self.meal1.add_meal()
 
         # Request data.
-        valid_order_data = dumps({"user_id": 1, "meal_dict": {1: 3}})
-        invalid_order_data = dumps({"user_id": "a", "meal_dict": {1: 3}})
+        valid_order_data = dumps({"meal_dict": {1: 3}})
+        invalid_order_data = dumps({"meal_dict": {}})
         # Get user token to create header.
         token = self.user1.generate_token(id=1)
         headers = {'Authorization': 'Bearer {}'.format(token)}
@@ -36,13 +36,13 @@ class TestOrderResource(BaseCase):
         response = self.client.post(
             ORDERS_URL, data=invalid_order_data, headers=headers)
         # Check status code is 400.
-        self.assertEqual(response.status_code, 400)
-        expected = 'user_id (int) is required.'
+        self.assertEqual(response.status_code, 201)
+        expected = 'Order has been created successfully.'
         # Check correct message returned.
         self.assertEqual(expected, loads(
             response.data.decode('utf-8'))['message'])
         # Check order create with invalid meal_dict.
-        invalid_order_data = dumps({"user_id": 1, 'meal_dict': []})
+        invalid_order_data = dumps({'meal_dict': []})
         response = self.client.post(
             ORDERS_URL, data=invalid_order_data, headers=headers)
         # Check status code is 400.
@@ -52,7 +52,7 @@ class TestOrderResource(BaseCase):
         self.assertEqual(expected, loads(
             response.data.decode('utf-8'))['message'])
         # Create order for non-existent meal.
-        valid_order_data = dumps({'user_id': 2, 'meal_dict': {2: 3}})
+        valid_order_data = dumps({'meal_dict': {2: 3}})
         response = self.client.post(
             ORDERS_URL, data=valid_order_data, headers=headers)
         # Check status code is 400.
@@ -61,7 +61,7 @@ class TestOrderResource(BaseCase):
         self.assertEqual(expected, loads(
             response.data.decode('utf-8'))['message'])
         # Place order with invalid quantity.
-        valid_order_data = dumps({'user_id': 2, 'meal_dict': {1: 'b'}})
+        valid_order_data = dumps({'meal_dict': {1: 'b'}})
         response = self.client.post(
             ORDERS_URL, data=valid_order_data, headers=headers)
         # Check status code is 400.
@@ -70,7 +70,7 @@ class TestOrderResource(BaseCase):
         self.assertEqual(expected, loads(
             response.data.decode('utf-8'))['message'])
         # Place order with invalid meal_id.
-        valid_order_data = dumps({'user_id': 2, 'meal_dict': {'a': 1}})
+        valid_order_data = dumps({'meal_dict': {'a': 1}})
         response = self.client.post(
             ORDERS_URL, data=valid_order_data, headers=headers)
         # Check status code is 400.
@@ -151,6 +151,7 @@ class TestOrderResource(BaseCase):
         self.meal1.add_meal()
         self.user1.add_user()
         self.order1.add_order()
+
 
         self.user2 = User(
             username='user2', email='user2@email.com', password='pass#123')

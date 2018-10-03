@@ -17,7 +17,7 @@ class TestUser(BaseCase):
         expected = {'message': 'User registration successful'}
         self.assertEqual(expected['message'], loads(
             response.data.decode('utf-8'))['message'])
-        self.assertTrue(loads(response.data.decode('utf-8'))['token'])
+        self.assertTrue(loads(response.data.decode('utf-8'))['user'])
 
         # test duplicate signup
         response = self.client.post(
