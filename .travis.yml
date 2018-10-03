@@ -18,7 +18,6 @@ before_script:
   - export HOST=localhost
   - export USER='gloria'
   - export PASSWORD='bubble24'
-  - source venv/bin/activate
   - python api/v2/connect_to_db.py
 
 script:
