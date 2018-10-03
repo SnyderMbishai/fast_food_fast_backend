@@ -68,17 +68,17 @@ class Meal(object):
     def get(**kwargs):
         '''Get meal by key'''
         for key, val in kwargs.items():
-            querry = "SELECT * FROM meals WHERE {}='{}'".format(key, val)
-            cur.execute(querry)
+            query = "SELECT * FROM meals WHERE {}='{}'".format(key, val)
+            cur.execute(query)
             user = cur.fetchone()
             return user
 
     @staticmethod
     def view(meal):
         '''View a meal information.'''
-        id = meal[0]
+    
         return {
-            'id': id,
+            'id': meal[0],
             'name': meal[1],
             'price': meal[2]
         }
