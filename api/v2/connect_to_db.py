@@ -3,15 +3,50 @@
 import os
 from psycopg2 import connect
 
+def check_if_db_exists(db_name):
+    '''check is a specified db exists.'''  
+    try:  
+        conn = connect(
+                database=db_name,
+                user=os.getenv('USER'),
+                password=os.getenv('PASSWORD'),
+                host=os.getenv('HOST'))
+        return True
+    except:        
+        return False
+
+def create_databases():
+    
+    default_conn = connect(
+        database=os.getenv('D_DB'),
+        user='postgres',
+        password=os.getenv('PASSWORD'),
+        host=os.getenv('HOST'))
+    default_conn.set_session(autocommit=True)
+    cur = default_conn.cursor()
+    dev_db = os.getenv('DEV_DB')
+    test_db = os.getenv('TESTING_DB')
+
+    if check_if_db_exists(dev_db) is False:
+        query = "CREATE DATABASE {}".format(dev_db)
+        cur.execute(query)
+    
+    if check_if_db_exists(test_db) is False:
+        query = "CREATE DATABASE {}".format(test_db)
+        cur.execute(query)  
+    
+
+#     dev_db = "CREATE DATABASE IF NOT EXISTS " + os.getenv('DEV_DB')
+#     test_db = "CREATE DATABASE IF NOT EXISTS " + os.getenv('DEV_DB')
 
 def connect_to_db(db=None):
     '''create a connection to the right db.'''
-    """CREATE DATABASE IF NOT EXISTS {},{}""".format(os.getenv('DEV_DB'), os.getenv('TESTING_DB'))
+
     if db == 'testing':
         db_name = os.getenv('TESTING_DB')
     else:
         db_name = os.getenv('DEV_DB')
-
+        
     try:
 
         return connect(
@@ -21,7 +56,6 @@ def connect_to_db(db=None):
             host=os.getenv('HOST'))
     except:
         return "Unable to connect"
-
 
 def user_table(cur):
     '''Define users table'''
@@ -126,9 +160,7 @@ def create(db=None):
     cur = conn.cursor()
 
     cur.execute(
-        """
-            DROP TABLE IF EXISTS users, meals,orders, roles,
-            user_roles, order_items CASCADE
+        """DROP TABLE IF EXISTS users, meals,orders, roles,user_roles, order_items CASCADE
         """)
 
     # create the tables
@@ -146,4 +178,5 @@ def create(db=None):
 
 
 if __name__ == '__main__':
+    create_databases()
     create()
