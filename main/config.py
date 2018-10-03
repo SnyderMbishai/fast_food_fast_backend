@@ -18,10 +18,16 @@ class TestingConfig(Config):
 class DevelopmentConfig(Config):
     """Configuration for development environment."""
 
+    DEBUG = True
+
+class ProductionConfig(Config):
+    """Configuration for development environment."""
+
     DEBUG = False
 
 
 configurations = {
     "testing": TestingConfig,
-    "development": DevelopmentConfig
+    "development": DevelopmentConfig,
+    "production": ProductionConfig
 }
