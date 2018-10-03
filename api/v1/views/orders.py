@@ -90,7 +90,7 @@ class OrderResource(Resource):
         new_data = data.get('new_data')
         payload = self.get_role_and_user_id()
         user_id = payload['user_id']
-        order_id=int(order_id)
+        order_id = int(order_id)
         order = Order.get(id=order_id)
 
         if not order:

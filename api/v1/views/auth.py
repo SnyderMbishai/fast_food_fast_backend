@@ -1,7 +1,5 @@
 """User resource."""
 
-import re
-from flask import request
 from flask_restful import Resource, reqparse
 from api.v1.models import User
 

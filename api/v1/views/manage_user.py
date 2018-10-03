@@ -1,9 +1,6 @@
 """User management resource."""
 
-import re
-
-from flask import request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
 from api.v1.models import User
 from api.helpers.decorators import super_user_required
