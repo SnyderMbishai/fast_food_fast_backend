@@ -18,6 +18,7 @@ from api.v2.views.meals import DBMealResource
 from api.v2.views.orders import DBOrderResource
 from api.v2.views.manage_user import DBManageUsersResource
 from api.v2.views.orders import DBOrderManagement
+from api.v2.helpers.error_handler import catch_bad_request_400
 
 
 def create_app(configuration):
@@ -62,6 +63,7 @@ def create_app(configuration):
         DBOrderManagement, '/api/v2/orders/accept/<int:order_id>')
 
     app.register_blueprint(api_blueprint)
+    app.register_error_handler(400,catch_bad_request_400)
 
     @app.route("/")
     def docs():
