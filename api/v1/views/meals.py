@@ -1,7 +1,6 @@
 '''Meals resource.'''
 
 import re
-from json import JSONDecodeError
 
 from flask import request
 from flask_restful import Resource, reqparse
