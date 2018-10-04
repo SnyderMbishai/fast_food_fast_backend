@@ -32,6 +32,8 @@ class DBOrderResource(Resource):
 
         # Check if meal ordered exist.
         meal_ids = meal_dict.keys()
+        meals_not_found = []
+        meals_found = {}
         for meal_id in meal_ids:
             try:
                 meal_id = int(meal_id)
@@ -41,20 +43,25 @@ class DBOrderResource(Resource):
                         return {
                             'message': 'Meal quantities should be integers.'
                         }, 400
+                    meals_found.update({meal_id: meal_dict[str(meal_id)]})    
                 else:
-                    return {
-                        'message': 'Meal {} does not exist.'.format(meal_id)
-                    }, 400
-            except ValueError:
+                    meals_not_found.append(meal_id)
+                    
+            except Exception:
                 return {'message': 'Meal ID should be an integer.'}, 400
-
-        order = Order(user_id=user_id, meal_dict=meal_dict)
+        if not meal_dict:
+            return {
+                'message': 'Meal IDs provided are invalid.',
+                'meal_ids_not_found': meals_not_found
+            }, 404
+        order = Order(user_id=user_id, meal_dict=meals_found)
         order_id = order.add_order()
 
         return {
             'message': 'Order has been created successfully.',
             'order_id': order_id,
-            'meals': Order.get_meals(order_id)
+            'meals': Order.get_meals(order_id),
+            'meal_ids_not_found': meals_not_found
         }, 201
 
     @login_required
