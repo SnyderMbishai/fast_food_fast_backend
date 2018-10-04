@@ -1,6 +1,6 @@
 ## Fast Food Fast
 
-[![Build Status](https://travis-ci.org/SnyderMbishai/fast_food_fast_backend.svg?branch=develop_v1)](https://travis-ci.org/SnyderMbishai/fast_food_fast_backend)
+[![Build Status](https://travis-ci.org/SnyderMbishai/fast_food_fast_backend.svg?branch=ch-update-readme-and-badges-160789023)](https://travis-ci.org/SnyderMbishai/fast_food_fast_backend)
 [![Coverage Status](https://coveralls.io/repos/github/SnyderMbishai/fast_food_fast_backend/badge.svg?branch=ft-add-helpers-160346910)](https://coveralls.io/github/SnyderMbishai/fast_food_fast_backend?branch=ft-add-helpers-160346910)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c58e13d5bd032ed9dba9/maintainability)](https://codeclimate.com/github/SnyderMbishai/fast_food_fast_backend/maintainability)
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)
@@ -8,11 +8,11 @@
 
 ### Link to heroku
 
-https://f-f-f-v1.herokuapp.com/
+https://fastfoodfastapi1n2.herokuapp.com/
 
-### Postman Documentation
+### Documentation
 
-https://documenter.getpostman.com/view/4146922/RWaRM5Ew
+https://fastfoodfastv2.docs.apiary.io/#
 
 ### Prerequisites
 
@@ -20,18 +20,20 @@ https://documenter.getpostman.com/view/4146922/RWaRM5Ew
 2. Flask: http://flask.pocoo.org/docs/1.0/installation/
 3. Flask_restful: https://flask-restful.readthedocs.io/en/latest/installation.html
 4. Pytest: https://docs.pytest.org/en/latest/getting-started.html
+5. Postgresql: https://www.postgresql.org/
+6. Psycopg2-binary: https://pypi.org/project/psycopg2-binary/
 
 ### Endpoints
 
 | Endpoint                             | Method         | Description                         |
 | ------------------------------------ | -------------- | ----------------------------------- |
-| /api/v1/users/signup                 | POST           | signup a user                       |
-| /api/v1/users/signin                 | POST           | signin a user                       |
-| /api/v1/meals                        | POST           | create a meal                       |
-| /api/v1/meals/<int:meal_id>          | GET/PUT        | get/edit a specific meal            |
-| /api/v1/orders/                      | POST/GET       | creat order,get all orders          |
-| /api/v1/orders/<int:order_id>        | PUT/GET/PATCH  | edit, get, complete an order        |
-| /api/v1/orders/accept/<int:order_id> | PATCH          | accept or reject order              |
+| /api/v2/users/signup                 | POST           | signup a user                       |
+| /api/v2/users/signin                 | POST           | signin a user                       |
+| /api/v2/meals                        | POST           | create a meal                       |
+| /api/v2/meals/<int:meal_id>          | GET/PUT        | get/edit a specific meal            |
+| /api/v2/orders/                      | POST/GET       | creat order,get all orders          |
+| /api/v2/orders/<int:order_id>        | PUT/GET/PATCH  | edit, get, complete an order        |
+| /api/v2/orders/accept/<int:order_id> | PATCH          | accept or reject order              |
 
 ### Running and testing app
 
