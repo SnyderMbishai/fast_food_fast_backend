@@ -5,6 +5,10 @@ from flask import request
 from api.v2.models.user_model import User
 
 
+def get_access_token(authorization_header):
+    bearer_token = authorization_header.split(' ')
+    return bearer_token[-1]
+
 def login_required(func):
     '''Check if user has a valid token.'''
     @wraps(func)
@@ -12,7 +16,7 @@ def login_required(func):
         '''Check if user is logged in by decoding the token.'''
         authorization_header = request.headers.get('Authorization')
         if authorization_header:
-            access_token = authorization_header.split(' ')[1]
+            access_token = get_access_token(authorization_header)
             roles = User.decode_token(token=access_token)['roles']
             if 'user' in roles:
                 return func(*args, **kwargs)
@@ -27,7 +31,7 @@ def admin_required(func):
         '''Check if user is an admin by decoding the token.'''
         authorization_header = request.headers.get('Authorization')
         if authorization_header:
-            access_token = authorization_header.split(' ')[1]
+            access_token = get_access_token(authorization_header)
             roles = User.decode_token(token=access_token)['roles']
             if 'admin' in roles:
                 return func(*args, **kwargs)
@@ -42,7 +46,7 @@ def super_user_required(func):
         '''Check if user is a superuser by decoding the token.'''
         authorization_header = request.headers.get('Authorization')
         if authorization_header:
-            access_token = authorization_header.split(' ')[1]
+            access_token = get_access_token(authorization_header)
             roles = User.decode_token(token=access_token)['roles']
             if 'superuser' in roles:
                 return func(*args, **kwargs)
