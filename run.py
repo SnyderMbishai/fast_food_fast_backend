@@ -22,10 +22,10 @@ else:
     pass
 
 # run application
-CONFIGURATION = os.getenv('APP_SETTINGS')
-app = create_app(CONFIGURATION)
-PORT = os.getenv('PORT')
-app.run(debug=True, host='127.0.0.1', port=PORT)
+configuration = os.getenv('APP_SETTINGS')
+app = create_app(configuration)
+port = os.getenv('PORT')
+app.run(debug=True, host='0.0.0.0', port=port)
 
 # if CONFIGURATION != 'production':
 #     PORT = os.getenv('PORT')
