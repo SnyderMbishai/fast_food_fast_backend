@@ -178,5 +178,4 @@ def create(db=None):
 
 
 if __name__ == '__main__':
-    create_databases()
     create()
