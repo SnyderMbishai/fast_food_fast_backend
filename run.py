@@ -25,4 +25,4 @@ else:
 CONFIGURATION = os.getenv('APP_SETTINGS')
 app = create_app(CONFIGURATION)
 # PORT = os.getenv('PORT')
-app.run(debug=False, host='0.0.0.0', port=7000)
+# app.run(debug=False, port=os.getenv('PORT'))
