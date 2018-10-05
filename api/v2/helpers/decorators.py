@@ -6,6 +6,7 @@ from api.v2.models.user_model import User
 
 
 def get_access_token(authorization_header):
+    '''Get a user's access from the authorization header.'''
     bearer_token = authorization_header.split(' ')
     return bearer_token[-1]
 
