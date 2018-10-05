@@ -43,10 +43,10 @@ class DBOrderResource(Resource):
                         return {
                             'message': 'Meal quantities should be integers.'
                         }, 400
-                    meals_found.update({meal_id: meal_dict[str(meal_id)]})    
+                    meals_found.update({meal_id: meal_dict[str(meal_id)]})
                 else:
                     meals_not_found.append(meal_id)
-                    
+
             except Exception:
                 return {'message': 'Meal ID should be an integer.'}, 400
         if not meal_dict:
