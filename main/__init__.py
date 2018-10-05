@@ -18,7 +18,7 @@ from api.v2.views.meals import DBMealResource
 from api.v2.views.orders import DBOrderResource
 from api.v2.views.manage_user import DBManageUsersResource
 from api.v2.views.orders import DBOrderManagement
-
+from werkzeug.exceptions import BadRequest
 
 def create_app(configuration):
     '''Create the flask app.'''
@@ -27,6 +27,7 @@ def create_app(configuration):
     api_blueprint = Blueprint('api', __name__)
     api = Api(api_blueprint)
     app.config.from_object(configurations[configuration])
+    app.config['PROPAGATE_EXCEPTIONS'] = True
     app.url_map.strict_slashes = False
     app_context = app.app_context()
     app_context.push()
@@ -67,5 +68,8 @@ def create_app(configuration):
     def docs():
         '''Render the docstring'''
         return render_template("documentation.html")
+    @api_blueprint.errorhandler(400)
+    def handle_error(e):
+        return {'dgfhgjh':'dfghjkl'}, 400
 
     return app
