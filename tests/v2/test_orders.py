@@ -35,9 +35,9 @@ class TestOrderResource(BaseCase):
         # Check order create with invalid user_id.
         response = self.client.post(
             ORDERS_URL, data=invalid_order_data, headers=headers)
-        # Check status code is 400.
-        self.assertEqual(response.status_code, 201)
-        expected = 'Order has been created successfully.'
+        # Check status code is 404 as nothing will be found.
+        self.assertEqual(response.status_code, 404)
+        expected = 'Meal IDs provided are invalid.'
         # Check correct message returned.
         self.assertEqual(expected, loads(
             response.data.decode('utf-8'))['message'])
@@ -55,9 +55,9 @@ class TestOrderResource(BaseCase):
         valid_order_data = dumps({'meal_dict': {2: 3}})
         response = self.client.post(
             ORDERS_URL, data=valid_order_data, headers=headers)
-        # Check status code is 400.
-        self.assertEqual(response.status_code, 400)
-        expected = 'Meal 2 does not exist.'
+        # Check status code is 201 where one meal exists as the order should go through.
+        self.assertEqual(response.status_code, 201)
+        expected = 'Order has been created successfully.'
         self.assertEqual(expected, loads(
             response.data.decode('utf-8'))['message'])
         # Place order with invalid quantity.
