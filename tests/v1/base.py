@@ -74,7 +74,7 @@ class BaseCase(TestCase):
         admin.roles.extend(['admin', 'user'])
         admin.save()
         return admin.generate_token()
-
+    
     def get_super_user_token(self):
         superuser = User(username='Administrator', password='pass400&', email='admin@admin.com')
         superuser.roles.extend(['superuser','user'])

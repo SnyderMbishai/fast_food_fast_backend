@@ -3,32 +3,13 @@ import os
 
 from main import create_app
 from api.v1.models import User
-from api.v2.models.user_model import User as User2
 
-# create super user without db
-user = User(username='Administrator',
-            password='pass400&', email='admin@admin.com')
+#create a super user
+user = User(username='Administrator',password='pass400&', email='admin@admin.com')
 user.roles.append('superuser')
 user.save()
 
-# create super user with db
-user2 = User2(username='Administrator',
-              password='pass400&', email='admin@admin.com')
-if not User2.get(username='Administrator'):
-    user2.add_user()
-    super_id = User2.get(username='Administrator')[0]
-    user2.assign_user_a_role('superuser', super_id)
-else:
-    pass
-
-# run application
 configuration = os.getenv('APP_SETTINGS')
 app = create_app(configuration)
-port = os.getenv('PORT')
+port=os.getenv('PORT')
 app.run(debug=True, host='0.0.0.0', port=port)
-
-# if CONFIGURATION != 'production':
-#     PORT = os.getenv('PORT')
-#     app.run(debug=False, port=os.getenv('PORT'))
-# else:
-#     pass
