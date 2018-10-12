@@ -1,0 +1,405 @@
+FORMAT: 1A
+HOST: https://f-f-f-v1.herokuapp.com/
+
+# fast_food_fast
+
+fast_food_fast is an API application that lets users signup, signin,
+make orders and check their order history. The admin can create meals,
+accept/reject orders and mark an order as complete.
+
+## Signup [/api/v1/users/signup]
+
+### Register a User [POST]
+
+You may register as a user using this action. It takes a JSON
+object containing a username, email, password and password confirmation.
+
++ Request (application/json)
+
+        {
+            "username": "username",
+            "email": "email@gmail.com",
+            "password":"password123",
+            "confirm password":"password123",
+            "admin": "True"
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/users/signup
+
+    + Body
+
+            {
+                "message": "User registration successful",
+                "user": "new_user",
+                "token": token
+                
+            }
+
+## Signin [/api/v1/users/signin]
+
+### Signin a User [POST]
+
+You may signing if you are already registered using this action. 
+It takes a JSON object containing a username and password.
+
++ Request (application/json)
+
+        {
+            "username": "username",
+            "password":"password123"
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/users/signin
+
+    + Body
+
+            {
+                "message": "User login successful.", 
+                "token": token 
+            }
+
+## Meals [/api/v1/meals]
+
+### Create a Meal [POST]
+
+Admin can create a meal using this action. It takes a JSON
+object containing name and price.
+
++ Request (application/json)
+
+        {
+            "name": "Ugali beef",
+            "price": 500
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/meals
+
+    + Body
+
+            {
+                "message": "Meal successfully added.", 
+                "meal": meal
+                
+            }
+
+### List All Meals [GET]
+
+Admin/user can list all meals using this action.
+
++ Response 200 (application/json)
+
+        
+            {
+                "meals": [
+                    {   "id":1,
+                        "name":"ugali beef",
+                        "price":500
+                    },{
+                        "id":1,
+                        "name":"ugali beef",
+                        "price":500
+                    }]
+                     
+            }
+        
+
+## Single Meal [/api/v1/meals/1]
+
+### List a Meal [GET]
+
+Admin/user can list a meal using this action.
+
++ Response 200 (application/json)
+
+        
+            {
+                "meal": 
+                    {   "id":1,
+                        "name":"ugali beef",
+                        "price":500
+                    }
+            }
+        
+
+### Edit a Meal [PUT]
+
+Admin can edit a meal using this action. It takes a JSON
+object containing name or price or both.
+
++ Request (application/json)
+
+        {
+            "name": "Ugali chicken",
+            "price": 500
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/meals/1
+
+    + Body
+
+            {
+                "message": "Meal has been updated successfully",
+                "new_meal": meal
+                
+            }
+
+### Delete a Meal [DELETE]
+
+Admin can delete a meal using this action.
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Meal successfully deleted."
+            }
+            
+## Orders [/api/v1/orders/]
+
+### Create an Order [POST]
+
+Admin can create an order using this action. It takes a JSON
+object containing the user ID and the meal details(dict).
+
++ Request (application/json)
+
+        {
+            "user_id": 1,
+            "meal_dict": {
+                "1":2
+            }
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/orders/
+
+    + Body
+
+            {
+                "message": "Order has been created successfully.", 
+                "order": {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":2,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1000
+                    
+                }
+                
+            }
+
+### List All Orders [GET]
+
+Admin/user can fetch all orders using this action.
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Orders found.", 
+                "orders": [
+                        {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":2,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1000
+                    
+                }
+                ]
+                     
+            }
+        
+
+## Single Order [/api/v1/orders/1]
+
+### List a Specific Order [GET]
+
+Admin/user can list a specific meal using this action.
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Order found.", 
+                "order":
+                    {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":2,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1000
+                    
+                
+                    }
+            }
+        
+
+### Edit an order [PUT]
+
+Admin/user can edit an order using this action. It takes a JSON
+object containing the detail to be changed.
+
++ Request (application/json)
+
+        {
+            "new_data":{"meals_dict":{"1":3}}
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/meals/1
+
+    + Body
+
+            {
+                "message": "Order updated successfully.", 
+                "new_order": {
+                    "id":1,
+                    "meals":[
+                            {
+                                "quantity":3,
+                                "meal": {
+                                    "id":1,
+                                    "name":"ugali beef",
+                                    "price": 500
+                                    }
+                            }
+                        ],
+                    "user":
+                        {
+                            "username":"username",
+                            "email":"hhhh@gmail.com",
+                            "roles":"user",
+                            "id":1
+                        },
+                    "completed":False,
+                    "accepted":False,
+                    "time":time,
+                    "total":1500
+                    }
+                
+            }
+            
+
+
+### Mark an Order as Complete [PATCH]
+
+Admin/user can mark an order as complete using this action.
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Order 1 has been completed."
+            }
+
+
+     
+
+### Delete an Order [DELETE]
+
+Admin/user can delete an order using this action.
+
++ Response 200 (application/json)
+
+        
+            {
+                "message": "Order successfully deleted."
+            }
+
+## Order Management [/api/v1/orders/accept/1]
+
+### Accept/Decline an order [PATCH]
+
+Admin can accept or decline an order using this action.
+
++ Request (application/json)
+
+        {
+            "accepted": false
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /api/v1/orders/accept/1
+
+    + Body
+
+            {
+                "message": "Order 1 has been accepted"
+            }

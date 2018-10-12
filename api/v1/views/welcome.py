@@ -7,4 +7,5 @@ class WelcomeResource(Resource):
 
     def get(self):
         """Display welcome message."""
+
         return {'message': 'Welcome to Fast Food Fast.'}, 200
