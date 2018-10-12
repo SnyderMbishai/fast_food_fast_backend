@@ -1,13 +1,12 @@
 '''User resource.'''
 
 import re
-
 from flask_restful import Resource, reqparse
 
-from api.v1.models import User
+from api.v2.models.user_model import User
 
 
-class UserResource(Resource):
+class DBUserResource(Resource):
     '''Class for handling user registration.'''
 
     parser = reqparse.RequestParser()
@@ -23,7 +22,7 @@ class UserResource(Resource):
     def post(self):
         '''Create new user.'''
 
-        arguments = UserResource.parser.parse_args()
+        arguments = DBUserResource.parser.parse_args()
         password = arguments.get('password')
         confirm_pwd = arguments.get('confirm_password')
         email = arguments.get('email')
@@ -37,23 +36,18 @@ class UserResource(Resource):
         elif not re.match(email_format, email):
             return {
                 'message': 'Invalid email.Example of a valid one:hero@gmail.com'
-                }, 400
+            }, 400
         elif password != confirm_pwd:
-            return{'message':"passwords do not match!"}
+            return{'message': "passwords do not match!"}
         elif len(password) < 8:
-            return {'message': 'Invalid password. Password should be 8 or more characters long.'}, 400
-        elif User.get_by_key(username=username):
+            return ({'message': 'Invalid password. Password should be 8 or more characters long.'}, 400)
+        elif User.get(username=username):
             return {'message': 'Username already taken, if you are registered,please login to continue.'}, 400
-        elif User.get_by_key(email=email):
+        elif User.get(email=email):
             return {'message': 'Email already taken, if you are registered, please login to continue.'}, 400
-
         new_user = User(username=username, password=password, email=email)
-        new_user.roles.append('user')
-        new_user.save()
-        token = new_user.generate_token()
+        new_user.add_user()
         new_user = new_user.view()
-
         return {
             'message': 'User registration successful',
-            'user': new_user,
-            'token': token}, 201
+            'user': new_user}, 201

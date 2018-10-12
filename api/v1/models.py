@@ -13,14 +13,12 @@ class DB():
 
     def __init__(self):
         '''Create an empty database.'''
-
         self.users = {}
         self.orders = {}
         self.meals = {}
 
     def drop(self):
         '''Drop entire database.'''
-
         self.__init__()
 
 
@@ -28,11 +26,10 @@ db = DB()
 
 
 class Base:
-    '''Base class to be inherited by other models.'''
+    '''Base class to be inherited by other model classes.'''
 
     def save(self):
         '''Add object to database.'''
-
         if self.id is None:
             setattr(self, 'id', len(getattr(db, self.tablename)) + 1)
         getattr(db, self.tablename).update({self.id: self})
@@ -40,12 +37,10 @@ class Base:
 
     def delete(self):
         '''Delete object from database.'''
-
         del getattr(db, self.tablename)[self.id]
 
     def update(self, new_data):
         '''Update object.'''
-
         keys = new_data.keys()
         for key in keys:
             setattr(self, key, new_data[key])
@@ -53,25 +48,21 @@ class Base:
 
     def view(self):
         '''View object as a dictionary.'''
-
         return self.__dict__
 
     @classmethod
     def get(cls, id):
         '''Get object from it's table by id.'''
-
         return getattr(db, cls.tablename).get(id)
 
     @classmethod
     def get_all(cls):
         '''Get all objects in a table.'''
-
         return getattr(db, cls.tablename)
 
     @classmethod
     def get_by_key(cls, **kwargs):
         '''Get an object by a key that is not id.'''
-
         kwarg = list(kwargs.keys())[0]
         db_store = getattr(db, cls.tablename)
         for key in db_store:
@@ -83,7 +74,6 @@ class Base:
     @classmethod
     def get_many_by_key(cls, **kwargs):
         '''Get an object by a key that is not id.'''
-
         kwarg = list(kwargs.keys())[0]
         db_store = getattr(db, cls.tablename)
         objs = []
@@ -101,7 +91,6 @@ class User(Base):
 
     def __init__(self, username, password, email):
         '''Initialize a user.'''
-
         self.id = None
         self.username = username
         self.email = email
@@ -110,12 +99,10 @@ class User(Base):
 
     def make_hash(self, password):
         '''Generate hash of password.'''
-
         return sha256(password.encode('utf-8')).hexdigest()
 
     def generate_token(self):
         '''Create a token for a user.'''
-
         key = getenv('APP_SECRET_KEY')
         payload = {
             'user_id': self.id,
@@ -129,18 +116,15 @@ class User(Base):
     @staticmethod
     def decode_token(token):
         '''View information inside a token.'''
-
         key = getenv('APP_SECRET_KEY')
         return decode(token, key=key, algorithms=['HS256'])
 
     def check_password(self, password):
         '''Validate a user's password.'''
-
         return True if self.make_hash(password) == self.password else False
 
     def view(self):
         '''View a user's information.'''
-
         return {
             'username': self.username,
             'email': self.email,
@@ -151,10 +135,8 @@ class User(Base):
     @staticmethod
     def make_user_admin(user):
         '''Make a user an admin.'''
-
         user.roles.append('admin')
         user.save()
-
 
 
 class Meal(Base):
@@ -164,7 +146,6 @@ class Meal(Base):
 
     def __init__(self, name, price):
         '''Initialize a meal.'''
-
         self.id = None
         self.name = name
         self.price = price
@@ -195,10 +176,12 @@ class Order(Base):
 
     def get_total(self):
         '''Get total cost of an order.'''
+
         return sum([i['quantity'] * i['meal']['price'] for i in self.meals])
 
     def update(self, new_data):
         '''Update an order.'''
+
         new_order = Order(
             new_data['user_id'], meals_dict=new_data['meals_dict'])
         setattr(new_order, 'id', self.id)
