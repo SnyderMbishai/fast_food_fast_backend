@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, Blueprint
 from flask_restful import Api
+from flask_cors import CORS
 
 from main.config import configurations
 # v1
@@ -24,6 +25,7 @@ def create_app(configuration):
     '''Create the flask app.'''
 
     app = Flask(__name__)
+    CORS(app)
     api_blueprint = Blueprint('api', __name__)
     api = Api(api_blueprint)
     app.config.from_object(configurations[configuration])
