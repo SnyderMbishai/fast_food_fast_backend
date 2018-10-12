@@ -1,71 +1,24 @@
-'''Create application.'''
-
-from flask import Flask, render_template, Blueprint
+"""Create application."""
+from flask import Flask
 from flask_restful import Api
 
-from main.config import configurations
-# v1
-from api.v1.views.welcome import WelcomeResource
-from api.v1.views.user import UserResource
-from api.v1.views.auth import AuthResource
-from api.v1.views.meals import MealResource
-from api.v1.views.orders import OrderResource, OrderManagement
-from api.v1.views.manage_user import ManageUsersResource
-# v2
-from api.v2.views.user import DBUserResource
-from api.v2.views.auth import DBAuthResource
-from api.v2.views.meals import DBMealResource
-from api.v2.views.orders import DBOrderResource
-from api.v2.views.manage_user import DBManageUsersResource
-from api.v2.views.orders import DBOrderManagement
+from .config import configurations
+from api.views.welcome import WelcomeResource
 
 
 def create_app(configuration):
-    '''Create the flask app.'''
-
+    """Create the flask app."""
     app = Flask(__name__)
-    api_blueprint = Blueprint('api', __name__)
-    api = Api(api_blueprint)
     app.config.from_object(configurations[configuration])
-    app.url_map.strict_slashes = False
     app_context = app.app_context()
     app_context.push()
-    # api = Api(app)
-
-    # api.add_resource(
-    #     WelcomeResource, '/', '/api/v1')
+    api = Api(app)
     api.add_resource(
-        UserResource, '/api/v1/users/signup')
-    api.add_resource(
-        AuthResource, '/api/v1/users/signin')
-    api.add_resource(
-        MealResource, '/api/v1/meals', '/api/v1/meals/<int:meal_id>')
-    api.add_resource(
-        OrderResource, '/api/v1/orders/', '/api/v1/orders/<int:order_id>')
-    api.add_resource(
-        OrderManagement, '/api/v1/orders/accept/<int:order_id>')
-    api.add_resource(
-        ManageUsersResource, '/api/v1/users/manage/<int:user_id>')
-
-    # v2 urls
-    api.add_resource(
-        DBUserResource, '/api/v2/users/signup')
-    api.add_resource(
-        DBAuthResource, '/api/v2/users/signin')
-    api.add_resource(
-        DBMealResource, '/api/v2/meals', '/api/v2/meals/<int:meal_id>')
-    api.add_resource(
-        DBOrderResource, '/api/v2/orders/', '/api/v2/orders/<int:order_id>')
-    api.add_resource(
-        DBManageUsersResource, '/api/v2/users/manage/<int:user_id>')
-    api.add_resource(
-        DBOrderManagement, '/api/v2/orders/accept/<int:order_id>')
-
-    app.register_blueprint(api_blueprint)
-
-    @app.route("/")
-    def docs():
-        '''Render the docstring'''
-        return render_template("documentation.html")
-
+        WelcomeResource,
+        '/',
+        '/api/v1/',
+        '/api/v1'
+    )
     return app
+
+app = create_app('testing')

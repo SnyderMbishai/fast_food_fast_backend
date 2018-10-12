@@ -6,14 +6,7 @@ python:
 install:
   - pip install -r requirements.txt
 
-env:
-  - FLASK_VERSION=1.0.2
-
-before_script:
-  - psql -c "CREATE DATABASE test_db;" -U postgres
-  - python api/v2/connect_to_db.py
-
-script:
+script: 
   - python -m pytest
 
 after_success:
