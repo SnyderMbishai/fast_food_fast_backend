@@ -39,7 +39,7 @@ class DBOrderResource(Resource):
                 meal_id = int(meal_id)
                 meal = Meal.get(id=int(meal_id))
                 if meal:
-                    if not isinstance(meal_dict[str(meal_id)], int):
+                    if not isinstance(int(meal_dict[str(meal_id)]), int):
                         return {
                             'message': 'Meal quantities should be integers.'
                         }, 400
