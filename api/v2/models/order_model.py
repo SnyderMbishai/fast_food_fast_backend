@@ -5,6 +5,7 @@ from time import time
 
 from api.v2.connect_to_db import connect_to_db
 from api.v2.models.meal_model import Meal
+from api.v2.models.user_model import User
 
 
 conn = connect_to_db(getenv('APP_SETTINGS'))
@@ -49,6 +50,7 @@ class Order:
                 VALUES({}, {}, {}) RETURNING id
                 """.format(self.id, key, val)
             )
+            print(cur.fetchall(), "after")
             self.save()
 
     @staticmethod
@@ -93,9 +95,11 @@ class Order:
         created_at = order[4]
         meals = Order.get_meals(order_id)
         total = Order.total(order_id)
+        username = User.get(id=user_id)[1]
         return {
             'order_id': order_id,
             'user_id': user_id,
+            'username': username,
             'completed': completed,
             'accepted': accepted,
             'created_at': created_at,
@@ -146,7 +150,7 @@ class Order:
                     """.format(order_id, meal_id, quantity)
                 )
             else:
-                if quantity <= 0:
+                if int(quantity) <= 0:
                     # remove item
                     query = "DELETE FROM order_items WHERE order_id='{}' AND meal_id='{}'".format(order_id, meal_id)
                     cur.execute(query)

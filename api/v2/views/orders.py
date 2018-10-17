@@ -16,7 +16,7 @@ class DBOrderResource(Resource):
     def post(self):
         '''Create an order.'''
         data = request.get_json(force=True)
-        meal_dict = data.get('meal_dict')
+        meal_dict1 = data.get('meal_dict')
 
         authorization_header = request.headers.get('Authorization')
         access_token = authorization_header.split(' ')[1]
@@ -25,37 +25,43 @@ class DBOrderResource(Resource):
 
         if not isinstance(user_id, int):
             return {'message': 'user_id (int) is required.'}, 400
-        if not isinstance(meal_dict, dict):
+        if not isinstance(meal_dict1, dict):
             return {'message': 'meal_dict (dict) is required.'}, 400
-        if meal_dict is None:
+        if meal_dict1 is None:
             return{'message': "You haven't selected any meals"}, 200
 
         # Check if meal ordered exist.
-        meal_ids = meal_dict.keys()
+        meal_ids = meal_dict1.keys()
         meals_not_found = []
         meals_found = {}
+
         for meal_id in meal_ids:
             try:
                 meal_id = int(meal_id)
                 meal = Meal.get(id=int(meal_id))
                 if meal:
-                    if not isinstance(int(meal_dict[str(meal_id)]), int):
+                    if not isinstance(int(meal_dict1[str(meal_id)]), int):
                         return {
                             'message': 'Meal quantities should be integers.'
                         }, 400
-                    meals_found.update({meal_id: meal_dict[str(meal_id)]})
+                    meals_found.update({meal_id: meal_dict1[str(meal_id)]})
                 else:
                     meals_not_found.append(meal_id)
 
             except Exception:
                 return {'message': 'Meal ID should be an integer.'}, 400
-        if not meal_dict:
+        if not meal_dict1:
             return {
                 'message': 'Meal IDs provided are invalid.',
                 'meal_ids_not_found': meals_not_found
             }, 404
         order = Order(user_id=user_id, meal_dict=meals_found)
         order_id = order.add_order()
+        print(order_id, ">>0I>>>")
+        print(meals_not_found, ">>n>>>")
+        print(meals_found, ">>f>>>")
+        print(meal_ids, ">>ids>>>")
+        print(Order.get_meals(order_id))
 
         return {
             'message': 'Order has been created successfully.',
@@ -112,7 +118,7 @@ class DBOrderResource(Resource):
             new_info = []
             for key, val in new_data['meals_dict'].items():
                 new_info.append({'meal_id': key, 'quantity': val})
-            new_order = Order.update(order_id, new_info)
+            new_order = Order.update(int(order_id), new_info)
             new_order = Order.view(new_order)
             return {
                 'message': 'Order updated successfully.', 'new_order': new_order
