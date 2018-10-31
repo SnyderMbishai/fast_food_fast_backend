@@ -56,13 +56,8 @@ class DBOrderResource(Resource):
                 'meal_ids_not_found': meals_not_found
             }, 404
         order = Order(user_id=user_id, meal_dict=meals_found)
-        order_id = order.add_order()
-        print(order_id, ">>0I>>>")
-        print(meals_not_found, ">>n>>>")
-        print(meals_found, ">>f>>>")
-        print(meal_ids, ">>ids>>>")
-        print(Order.get_meals(order_id))
 
+        order_id = order.add_order()
         return {
             'message': 'Order has been created successfully.',
             'order_id': order_id,
