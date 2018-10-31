@@ -13,11 +13,12 @@ cur = conn.cursor()
 class Meal(object):
     '''Meal model.'''
 
-    def __init__(self, name, price):
+    def __init__(self, name, price, img):
         '''Initialize a meal.'''
         self.id = None
         self.name = name
         self.price = price
+        self.img = img
 
     def save(self):
         '''save item to db'''
@@ -27,10 +28,10 @@ class Meal(object):
         '''Add meal details to db table.'''
         cur.execute(
             """
-            INSERT INTO meals(name, price)
-            VALUES(%s,%s)
+            INSERT INTO meals(name, price, img)
+            VALUES(%s,%s,%s)
             """,
-            (self.name, self.price)
+            (self.name, self.price, self.img)
         )
         self.save()
 
@@ -79,5 +80,6 @@ class Meal(object):
         return {
             'id': meal[0],
             'name': meal[1],
-            'price': meal[2]
+            'price': meal[2],
+            'img_name': meal[3]
         }
