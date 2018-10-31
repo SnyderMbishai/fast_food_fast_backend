@@ -107,7 +107,8 @@ def meals_table(cur):
         CREATE TABLE meals(
             id serial PRIMARY KEY,
             name VARCHAR NOT NULL UNIQUE,
-            price INTEGER NOT NULL
+            price INTEGER NOT NULL,
+            img VARCHAR
         );
         """
     )
