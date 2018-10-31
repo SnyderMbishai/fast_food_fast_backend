@@ -60,7 +60,7 @@ def create_app(configuration):
     api.add_resource(
         DBOrderResource, '/api/v2/orders/', '/api/v2/orders/<int:order_id>')
     api.add_resource(
-        DBManageUsersResource, '/api/v2/users/manage/<int:user_id>')
+        DBManageUsersResource, '/api/v2/users/manage/', '/api/v2/users/manage/<int:user_id>')
     api.add_resource(
         DBOrderManagement, '/api/v2/orders/accept/<int:order_id>')
 
