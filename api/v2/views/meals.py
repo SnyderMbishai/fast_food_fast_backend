@@ -16,6 +16,8 @@ class DBMealResource(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('name', required=True, type=str, help='Name (str) is required.')
     parser.add_argument('price', required=True, type=int, help='Price (int) is required.')
+    parser.add_argument('img', required=False, type=str,
+                        help='Img (str) is required.')
 
     @admin_required
     def post(self):
@@ -23,7 +25,9 @@ class DBMealResource(Resource):
         arguments = DBMealResource.parser.parse_args()
         name = arguments.get('name')
         price = arguments.get('price')
+        img = arguments.get('img')
         name_format = re.compile(r"([a-zA-Z0-9])")
+        print(img, 123546)
 
         if not re.match(name_format, name):
             return{'message': "Invalid name!"}, 400
@@ -31,7 +35,7 @@ class DBMealResource(Resource):
         meal_exists = Meal.get(name=name)
         if meal_exists:
             return {'message': 'Meal with that name already exists.'}, 409
-        meal = Meal(name=name, price=price)
+        meal = Meal(name=name, price=price, img=img)
         meal.add_meal()
         meal = Meal.get(name=name)
         return {'message': 'Meal successfully added.', 'meal': Meal.view(meal)}, 201
