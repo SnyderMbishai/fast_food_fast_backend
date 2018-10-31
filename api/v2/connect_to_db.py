@@ -124,6 +124,7 @@ def orders_table(cur):
             completed BOOLEAN NOT NULL DEFAULT FALSE,
             accepted BOOLEAN NOT NULL DEFAULT FALSE,
             created_at FLOAT NOT NULL,
+            started BOOLEAN DEFAULT FALSE,
             FOREIGN KEY (user_id) REFERENCES users(id)
         );
         """

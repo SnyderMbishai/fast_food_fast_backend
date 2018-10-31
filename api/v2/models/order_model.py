@@ -102,6 +102,7 @@ class Order:
             'username': username,
             'completed': completed,
             'accepted': accepted,
+            'started': order[5],
             'created_at': created_at,
             'meals': meals,
             'total': total
@@ -173,6 +174,6 @@ class Order:
     def accept_order(cls, id, status):
         '''Method for accept/declining an order.'''
         cur.execute("""
-                UPDATE orders SET accepted='{}' WHERE id={}
-                """.format(status, id))
+                UPDATE orders SET accepted='{}', started='{}' WHERE id={}
+                """.format(status, True, id))
         cls.save(cls)
