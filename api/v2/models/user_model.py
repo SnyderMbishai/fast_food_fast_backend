@@ -14,6 +14,7 @@ conn = connect_to_db(getenv('APP_SETTINGS'))
 conn.set_session(autocommit=True)
 cur = conn.cursor()
 
+
 class Roles:
     '''Class for handling roles.'''
     @staticmethod
@@ -24,6 +25,7 @@ class Roles:
             cur.execute(query)
             role = cur.fetchone()
             return role
+
 
 class UserRoles:
     '''Class for handling user roles.'''
@@ -135,9 +137,19 @@ class User(object):
         '''View a user's information.'''
         id = User.get(username=self.username)[0]
         return {
-            'id':id,
+            'id': id,
             'username': self.username,
             'email': self.email
+        }
+
+    @staticmethod
+    def view_details(user):
+        roles = User.get_roles(user[0])
+        print(roles, ">>>>>>>>>>>")
+        return{
+            "id": user[0],
+            "username": user[1],
+            "roles": roles
         }
 
     @staticmethod
