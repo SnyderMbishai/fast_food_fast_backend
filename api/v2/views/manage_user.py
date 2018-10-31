@@ -21,3 +21,19 @@ class DBManageUsersResource(Resource):
                 return{'message': "User has been made admin successfully!"}, 200
             return{"message": "User {} is already an admin.".format(user_id)}
         return{'message': "User was not found!"}, 404
+
+    @super_user_required
+    def get(self, id=None):
+        if id:
+            user = User.get(id=id)
+            if user:
+                return{"message": "User found.", "user": user.view()}, 200
+            return{"message": "User not found."}, 404
+
+        users = User.get_all()
+        if users:
+            print([User.view_details(user)for user in users])
+            print(">>>>>>>>>>")
+            users = [User.view_details(user) for user in users]
+            return{"message": "Users found.", "users": users}, 200
+        return{"Users not found."}, 404
